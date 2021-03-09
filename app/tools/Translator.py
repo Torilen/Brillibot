@@ -45,6 +45,9 @@ def translate_by_api(text, env, src='en', dest='en'):
 
 def detect(text):
     translator = Translator()
+    print(text)
+    print(translator.detect(text))
+    print(translator.detect(text).lang)
     return translator.detect(text).lang
 
 if __name__ == '__main__':

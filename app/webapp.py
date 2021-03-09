@@ -72,5 +72,5 @@ class Reset(Resource):
 
 if __name__ == '__main__':
     context = (cer, key)
-    app.run(debug=True, threaded=True)
+    app.run(use_reloader=False, debug=True, threaded=True)
 
