@@ -65,6 +65,8 @@ Ici le projet repose sur les concepts de mémoire sémantique (la mémoire des f
 > pip install 'git+https://github.com/rsennrich/subword-nmt.git#egg=subword-nmt'
 >
 > pip install werkzeug==0.16.1
+> 
+> wget -O ./app/lib/stanford-postagger-full-2018-10-16.zip https://nlp.stanford.edu/software/stanford-postagger-full-2018-10-16.zip && unzip ./app/lib/stanford-postagger-full-2018-10-16.zip
 >
 > pip install pyOpenSSL
 >
