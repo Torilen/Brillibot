@@ -24,6 +24,8 @@ CORS(app)
 #api = Api(app)
 
 SHARED: Dict[Any, Any] = {}
+    
+os.environ['JAVAHOME'] = "/usr/lib/jvm/java-1.11.0-openjdk-amd64"
 
 @api.route('/interact')
 class Interact(Resource):
