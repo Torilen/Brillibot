@@ -18,7 +18,7 @@ class GrafbotAgent:
     epikg = EpiKG()
 
     def __init__(self, personality):
-        self.agent.opt.log()
+        self.opt = self.parser.parse_args(print_args=False)
         self.opt['task'] = 'parlai.agents.local_human.local_human:LocalHumanAgent'
         self.agent = create_agent(self.opt, requireModelExists=True)
         self.addStoriesLive(personality[:3])
