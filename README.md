@@ -37,6 +37,8 @@ Ici le projet repose sur les concepts de mémoire sémantique (la mémoire des f
 > sudo apt-update
 >
 > sudo apt install git
+> 
+> sudo apt install default-jre
 >
 > git clone https://github.com/Torilen/Grafbot.git
 >
