@@ -1,8 +1,9 @@
 import nltk
+import os
 
 from nltk.tag.stanford import StanfordPOSTagger
 from nltk.stem import PorterStemmer
-root_path="../lib/stanford-postagger-full-2018-10-16/"
+root_path="./app/lib/stanford-postagger-full-2018-10-16/"
 pos_tagger = StanfordPOSTagger(root_path + "models/english-bidirectional-distsim.tagger", root_path + "stanford-postagger.jar", encoding='utf8')
 #entity_tag = ['ADJ', 'ET', 'NC', 'NP', 'PRO', 'N']
 

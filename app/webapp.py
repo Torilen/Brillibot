@@ -24,6 +24,8 @@ CORS(app)
 #api = Api(app)
 
 SHARED: Dict[Any, Any] = {}
+    
+os.environ['JAVAHOME'] = "/usr/lib/jvm/java-1.11.0-openjdk-amd64"
 
 @api.route('/interact')
 class Interact(Resource):
@@ -72,5 +74,5 @@ class Reset(Resource):
 
 if __name__ == '__main__':
     context = (cer, key)
-    app.run(use_reloader=False, debug=True, threaded=True)
+    app.run(host="0.0.0.0", port=int("5000"), use_reloader=False, debug=True, threaded=True)
 
