@@ -1,5 +1,5 @@
 import pandas as pd
-from .Embedder import getContextualEmbedding, concatEmbeddingEn
+from Embedder import getContextualEmbedding, concatEmbeddingEn
 from transformers import BertTokenizer, FlaubertTokenizer, BertModel, FlaubertModel
 
 
