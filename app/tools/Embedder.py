@@ -22,28 +22,28 @@ def processString(s):
     print(s)
     return s
 
-def getContextualEmbedding(sentence, verbose=False):
-    sentence = processString(sentence)
-    tokens = tokenizer.tokenize(sentence)
-    tokens = ['[CLS]'] + tokens + ['[SEP]']
-    T = 30
-    padded_tokens = tokens +['[PAD]' for _ in range(T-len(tokens))]
-    if verbose:
-        print("Padded tokens are \n {} ".format(padded_tokens))
-    attn_mask_l = [ 1 if token != '[PAD]' else 0 for token in padded_tokens  ]
-    if verbose:
-        print("Attention Mask are \n {} ".format(attn_mask_l))
-    seg_ids = [0 for _ in range(len(padded_tokens))]
-    if verbose:
-        print("Segment Tokens are \n {}".format(seg_ids))
-    sent_ids = tokenizer.convert_tokens_to_ids(padded_tokens)
-    if verbose:
-        print("senetence idexes \n {} ".format(sent_ids))
-    token_ids = torch.tensor(sent_ids).unsqueeze(0)
-    attn_mask = torch.tensor(attn_mask_l).unsqueeze(0)
-    seg_ids   = torch.tensor(seg_ids).unsqueeze(0)
-    output = model(token_ids, attention_mask = attn_mask,token_type_ids = seg_ids)
-    return [output.last_hidden_state.cpu().detach().numpy()[0][1:sum(attn_mask_l)-1], tokens[1:len(tokens)-1]]
+def getContextualEmbedding(tokenizer, model, sentence, verbose=False):
+  sentence = processString(sentence)
+  tokens = tokenizer.tokenize(sentence)
+  tokens = ['[CLS]'] + tokens + ['[SEP]']
+  T = 30
+  padded_tokens = tokens +['[PAD]' for _ in range(T-len(tokens))]
+  if verbose:
+    print("Padded tokens are \n {} ".format(padded_tokens))
+  attn_mask_l = [ 1 if token != '[PAD]' else 0 for token in padded_tokens  ]
+  if verbose:
+    print("Attention Mask are \n {} ".format(attn_mask_l))
+  seg_ids = [0 for _ in range(len(padded_tokens))]
+  if verbose:
+    print("Segment Tokens are \n {}".format(seg_ids))
+  sent_ids = tokenizer.convert_tokens_to_ids(padded_tokens)
+  if verbose:
+    print("senetence idexes \n {} ".format(sent_ids))
+  token_ids = torch.tensor(sent_ids).unsqueeze(0)
+  attn_mask = torch.tensor(attn_mask_l).unsqueeze(0)
+  seg_ids   = torch.tensor(seg_ids).unsqueeze(0)
+  output = model(token_ids, attention_mask = attn_mask,token_type_ids = seg_ids)
+  return [output.last_hidden_state.cpu().detach().numpy()[0][1:sum(attn_mask_l)-1], tokens[1:len(tokens)-1]]
 
 def concatEmbeddingFr(embeddings):
   i = 0
