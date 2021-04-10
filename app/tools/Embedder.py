@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
 import re
-from transformers.modeling_bert import BertModel, FlaubertModel
-from transformers.tokenization_bert import BertTokenizer, FlaubertTokenizer
+from transformers.modeling_bert import BertModel
+from transformers.modeling_flaubert import FlaubertModel
+from transformers.tokenization_bert import BertTokenizer
+from transformers.tokenization_flaubert import FlaubertTokenizer
 import torch
 
 LANG = "EN"
