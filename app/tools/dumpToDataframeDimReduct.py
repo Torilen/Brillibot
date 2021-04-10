@@ -1,6 +1,7 @@
 import pandas as pd
 from Embedder import getContextualEmbedding, concatEmbeddingEn
-from transformers.modeling_bert import BertTokenizer, FlaubertTokenizer, BertModel, FlaubertModel
+from transformers.modeling_bert import BertModel, FlaubertModel
+from transformers.tokenization_bert import BertTokenizer, FlaubertTokenizer
 
 
 LANG = "EN"
