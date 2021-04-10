@@ -15,10 +15,17 @@ import torch
 
 from transformers import cached_path
 
+from tensorflow import keras
+
+compressor = keras.models.load_model('models/encoder768to32')
+
 PERSONACHAT_URL = "https://s3.amazonaws.com/datasets.huggingface.co/personachat/personachat_self_original.json"
 HF_FINETUNED_MODEL = "https://s3.amazonaws.com/models.huggingface.co/transfer-learning-chatbot/gpt_personachat_cache.tar.gz"
 
 logger = logging.getLogger(__file__)
+
+def compressVector(vector):
+    return compressor.predict(vector)
 
 def download_pretrained_model():
     """ Download and extract finetuned model from S3 """
