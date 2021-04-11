@@ -37,6 +37,7 @@ for sentence in p:
     ldfwiki = len(dfWiki)
     print('Processed ' + str(i) + ' articles -- dfWiki size = ' + str(ldfwiki) + ' -- '+str(ldfwiki/number*100)+'% of words processed', flush=True)
   if (i % 10 == 0):
+    dfWiki.reset_index(drop=True, inplace=True)
     dfWiki.to_json('{}-{}-dfWiki.json'.format(0, i))
 
 import keras
