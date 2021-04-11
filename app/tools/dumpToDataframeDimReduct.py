@@ -22,9 +22,9 @@ dfWiki = pd.DataFrame()
 number = len(content.split())
 i = 0
 
-print("Start !")
+print("Start !", flush=True)
 p = content.split('\n')
-print("{} articles to processed".format(len(p)))
+print("{} articles to processed".format(len(p)), flush=True)
 for sentence in p:
   for sent in range(len(sentence.split())-500):
     embed = getContextualEmbedding(tokenizer, model, sentence[sent*500:(sent+1)*500])
@@ -35,7 +35,7 @@ for sentence in p:
   i+=1
   if (i % 1 == 0):
     ldfwiki = len(dfWiki)
-    print('Processed ' + str(i) + ' articles -- dfWiki size = ' + str(ldfwiki) + ' -- '+str(ldfwiki/number*100)+'% of words processed')
+    print('Processed ' + str(i) + ' articles -- dfWiki size = ' + str(ldfwiki) + ' -- '+str(ldfwiki/number*100)+'% of words processed', flush=True)
   if (i % 10 == 0):
     dfWiki.to_json('{}-{}-dfWiki.json'.format(0, i))
 
