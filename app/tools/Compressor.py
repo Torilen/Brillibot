@@ -6,7 +6,7 @@ from keras import regularizers
 from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from sklearn.externals import joblib
+import joblib
 
 args = sys.argv
 
