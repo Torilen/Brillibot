@@ -49,7 +49,17 @@ if len(args) > 0:
 
         encoder.save('../models/compressor')
         joblib.dump(transformer, '../models/normalizer.pkl')
-
+    elif args[1] == "convert":
+        dfWiki = pd.read_json(args[2])
+        words = dfWiki['word']
+        data = dfWiki.drop(['word'], axis=1)
+        data = data.to_numpy()
+        compressor = keras.models.load_model('../models/compressor')
+        normalizer = joblib.load('../models/normalizer.pkl')
+        data_normalized = normalizer.transform(data)
+        data_compressed = compressor.predict(data_normalized)
+        dfWikiCompressed = pd.DataFrame(normalizer.inverse_transform(data_compressed))
+        dfWikiCompressed.to_json(args[2].replace('.json', '-compressed.json'))
 
 else:
     compressor = keras.models.load_model('../models/compressor')
