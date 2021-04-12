@@ -11,8 +11,8 @@ import joblib
 args = sys.argv
 print(args)
 if len(args) > 0:
-    if args[0] == "train":
-        dfWiki = pd.read_json(args[1])
+    if args[1] == "train":
+        dfWiki = pd.read_json(args[2])
 
         train, test = train_test_split(dfWiki.drop(['word'], axis=1), test_size=0.1)
         train = train.to_numpy()
