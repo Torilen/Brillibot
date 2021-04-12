@@ -17,7 +17,7 @@ if len(args) > 0:
         train, test = train_test_split(dfWiki.drop(['word'], axis=1), test_size=0.1)
         train = train.to_numpy()
         test = test.to_numpy()
-        transformer = MinMaxScaler().fit(train)
+        transformer = MinMaxScaler(feature_range=(32, 768)).fit(train)
         train = transformer.transform(train)
         test = transformer.transform(test)
         encoding_dim = 32
