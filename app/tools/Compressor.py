@@ -42,7 +42,7 @@ if len(args) > 0:
         autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 
         autoencoder.fit(train, train,
-                        epochs=200,
+                        epochs=60,
                         batch_size=256,
                         shuffle=True,
                         validation_data=(test, test))
