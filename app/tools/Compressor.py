@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 import joblib
 
 args = sys.argv
-
+print(args)
 if len(args) > 0:
     if args[0] == "train":
         dfWiki = pd.read_json(args[1])
