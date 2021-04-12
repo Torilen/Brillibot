@@ -58,4 +58,5 @@ else:
 def compressVector(v):
     vector_normalized = normalizer.transform([v])
     vector_compressed = compressor.predict(vector_normalized)
+
     return normalizer.inverse_transform([vector_compressed[0]])
