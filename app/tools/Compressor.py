@@ -17,38 +17,35 @@ if len(args) > 0:
         train, test = train_test_split(dfWiki.drop(['word'], axis=1), test_size=0.1)
         train = train.to_numpy()
         test = test.to_numpy()
-        transformer = MinMaxScaler(feature_range=(32, 768)).fit(train)
-        train = transformer.transform(train)
-        test = transformer.transform(test)
         encoding_dim = 32
         # This is our input image
+        # This is our input image
         input = keras.Input(shape=(train.shape[1],))
-        encoded = layers.Dense(500, activation='relu')(input)
-        encoded = layers.Dense(2000, activation='relu')(encoded)
-        encoded = layers.Dense(250, activation='relu')(encoded)
-        encoded = layers.Dense(1000, activation='relu')(encoded)
-        encoded = layers.Dense(encoding_dim, activation='relu')(encoded)
+        encoded = layers.Dense(500, activation='tanh')(input)
+        encoded = layers.Dense(2000, activation='tanh')(encoded)
+        encoded = layers.Dense(250, activation='tanh')(encoded)
+        encoded = layers.Dense(1000, activation='tanh')(encoded)
+        encoded = layers.Dense(encoding_dim, activation='tanh')(encoded)
 
-        decoded = layers.Dense(1000, activation='relu')(encoded)
-        decoded = layers.Dense(250, activation='relu')(decoded)
-        decoded = layers.Dense(2000, activation='relu')(decoded)
-        decoded = layers.Dense(500, activation='relu')(decoded)
-        decoded = layers.Dense(train.shape[1], activation='sigmoid')(decoded)
+        decoded = layers.Dense(1000, activation='tanh')(encoded)
+        decoded = layers.Dense(250, activation='tanh')(decoded)
+        decoded = layers.Dense(2000, activation='tanh')(decoded)
+        decoded = layers.Dense(500, activation='tanh')(decoded)
+        decoded = layers.Dense(train.shape[1], activation='tanh')(decoded)
 
         autoencoder = keras.Model(input, decoded)
 
         encoder = keras.Model(input, encoded)
 
-        autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+        autoencoder.compile(optimizer='adadelta', loss='mse')
 
         autoencoder.fit(train, train,
-                        epochs=60,
+                        epochs=200,
                         batch_size=256,
                         shuffle=True,
                         validation_data=(test, test))
 
         encoder.save('../models/compressor')
-        joblib.dump(transformer, '../models/normalizer.pkl')
     elif args[1] == "convert":
         print("Read file", flush=True)
         dfWiki = pd.read_json(args[2])
@@ -58,22 +55,15 @@ if len(args) > 0:
         data = data.to_numpy()
         print("Loading compressor", flush=True)
         compressor = keras.models.load_model('../models/compressor')
-        print("Loading normalizer", flush=True)
-        normalizer = joblib.load('../models/normalizer.pkl')
-        data_normalized = normalizer.transform(data)
         print("Compression...", flush=True)
-        data_compressed = compressor.predict(data_normalized)
-        dfWikiCompressed = pd.DataFrame(normalizer.inverse_transform(data_compressed))
+        data_compressed = compressor.predict(data)
+        dfWikiCompressed = pd.DataFrame(data_compressed)
         print("Save compressed file", flush=True)
         dfWikiCompressed.to_json(args[2].replace('.json', '-compressed.json'))
         print("Finish", flush=True)
 
 else:
     compressor = keras.models.load_model('../models/compressor')
-    normalizer = joblib.load('../models/normalizer.pkl')
 
 def compressVector(v):
-    vector_normalized = normalizer.transform([v])
-    vector_compressed = compressor.predict(vector_normalized)
-
-    return normalizer.inverse_transform([vector_compressed[0]])
+    return compressor.predict([v])
