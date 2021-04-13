@@ -36,7 +36,7 @@ for sentence in p:
     h = 0
     windows_size = 10
     for word in embed[1]:
-      sentences.append(' '.join(doc[min(0, h-windows_size):min(len(embed[1]), h+windows_size)]))
+      sentences.append(' '.join(doc[max(0, h-windows_size):min(len(embed[1]), h+windows_size)]))
       h+=1
     df2['sentence'] = sentences
     dfWiki = pd.concat([dfWiki, df2])
