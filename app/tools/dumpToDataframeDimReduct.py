@@ -35,10 +35,6 @@ for sentence in p:
     doc = embed[1]
     h = 0
     windows_size = 10
-    print(doc)
-    print(min(0, h-windows_size))
-    print(min(len(embed[1]), h+windows_size))
-    print(doc[min(0, h-windows_size):min(len(embed[1]), h+windows_size)])
     for word in embed[1]:
       sentences.append(' '.join(doc[min(0, h-windows_size):min(len(embed[1]), h+windows_size)]))
       h+=1
