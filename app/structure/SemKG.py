@@ -1,10 +1,16 @@
 import json
 import numpy as np
+import joblib
+import pandas as pd
+import hdbscan
 
 class SemKG:
     graph = dict()
     graphNodeId = dict()
     graphNeighbour = dict()
+
+    hdbscan_model = joblib.load('../models/hdbscan_trained.pkl')
+    dfWiki = pd.read_json('../tools/0-340-dfWiki-compressed-clustered.json')
 
     def get_occur_relation(self, s, o):
         return self.graph[(s, o)]
@@ -105,15 +111,41 @@ class SemKG:
                 return l
         return l
 
-    def get_stories(self, epikg, entities, top_n=5, steps=5):
-        graph_nodes_neighbours = list()
+    def get_nearest_member_of_cluster(self, source, cluster_target):
+        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values.T
+        minDist = np.dot(source, clusterDf[0])
+        idx = 0
+        for i in range(1, clusterDf.shape[0]):
+            currentDist = np.dot(source, clusterDf[1])
+            if currentDist < minDist:
+                idx = 0
+                minDist = currentDist
+        return idx
+
+    def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
+        dfVector = pd.DataFrame(entities_vector)
+        data_formatted = []
+        for col in dfVector.columns:
+            if col != "word":
+                data_formatted.append(dfVector[col].tolist())
+        data = np.array(data_formatted[0:32]).T
+        labels = hdbscan_model.predict(data)
+        data['word'] = entities_word
+        data['clusterid'] = labels
+        stories = []
+        for index, row in data.iterrows():
+            v = row.values.T
+            cluster = dfWiki[dfWiki.clusterid == row.clusterid]
+            stories.append(cluster.iloc[get_nearest_member_of_cluster(v, cluster)].sentence)
+
+        '''graph_nodes_neighbours = list()
         for e in entities:
             propa = self.semantic_propagation(e, steps, 0)
             for s in propa:
                 if(s not in graph_nodes_neighbours):
-                    graph_nodes_neighbours.append(s)
-        print(entities + graph_nodes_neighbours)
-        stories = epikg.get_stories([self.graphNodeId[e] for e in entities+graph_nodes_neighbours if e in list(self.graphNodeId.keys())], top_n, steps)
+                    graph_nodes_neighbours.append(s)'''
+       '''print(entities)
+        stories = epikg.get_stories([self.graphNodeId[e] for e in entities if e in list(self.graphNodeId.keys())], top_n, steps)'''
         add_to_persona = []
         for story in stories:
             add_to_persona.append('. '.join(story.sentence))

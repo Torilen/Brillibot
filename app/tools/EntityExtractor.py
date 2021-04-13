@@ -28,3 +28,6 @@ def get_good_words(sentence_tagged):
 
 def get_entities(sentence):
     return(get_good_words(pos_tag(sentence)))
+
+def get_entities_index(sentence):
+    return 0
