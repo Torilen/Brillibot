@@ -6,11 +6,11 @@ from keras import regularizers
 from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-import joblib
+
 
 args = sys.argv
 print(args)
-if len(args) > 0:
+if len(args) > 1:
     if args[1] == "train":
         dfWiki = pd.read_json(args[2])
 
