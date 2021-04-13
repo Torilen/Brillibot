@@ -32,11 +32,11 @@ for sentence in p:
     df2 = pd.DataFrame(embed[0])
     df2['word'] = [s.replace("</w>", "") for s in embed[1]]
     sentences = []
-    doc = ' '.join(embed[1])
+    doc = embed[1]
     h = 0
     windows_size = 10
     for word in embed[1]:
-      sentences.append(doc[min(0, h-windows_size):min(len(embed[1]), h+windows_size)])
+      sentences.append(' '.join(doc[min(0, h-windows_size):min(len(embed[1]), h+windows_size)]))
       h+=1
     df2['sentence'] = sentences
     dfWiki = pd.concat([dfWiki, df2])
