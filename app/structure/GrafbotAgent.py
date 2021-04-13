@@ -9,6 +9,7 @@ from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEm
 from tools.Converter import Entities2Tuples
 from structure.SemKG import SemKG
 from structure.EpiKG import EpiKG
+import os
 
 class GrafbotAgent:
     parser = setup_args()
@@ -18,8 +19,11 @@ class GrafbotAgent:
     semkg = SemKG()
     epikg = EpiKG()
     polyencoder = None
+    ip = ""
+    history = []
+    persona_history = []
 
-    def __init__(self, personality):
+    def __init__(self, personality, ip):
         self.opt = self.parser.parse_args(print_args=False)
         self.opt['task'] = 'parlai.agents.local_human.local_human:LocalHumanAgent'
         self.agent = create_agent(self.opt, requireModelExists=True)
@@ -27,21 +31,23 @@ class GrafbotAgent:
         self.learn(personality[3:])
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
-        self.polyencoder = self.initPolyEncoder()
+        self.ip = ip
+        self.initPolyEncoder(ip)
 
     def addStoriesLive(self, personality):
+        self.history += personality
+        self.persona_history += personality
         personalityText = ' \n'.join(["your persona: " + personaField for personaField in personality])
         print(personalityText)
         if(len(personality) > 0):
             self.agent.observe({'episode_done': False, 'text': personalityText})
 
     def learn(self, sentences):
-        for sentence in sentences:
-            entities = get_entities(sentence)
-            tuples = Entities2Tuples(entities, "linear")
-            self.semkg.add_relations(tuples, self.epikg, sentence)
+        self.semkg.learn(sentences)
 
-    def initPolyEncoder(self):
+    def initPolyEncoder(self, ip):
+        f = open('candidates{}.txt'.format(ip), "x")
+        f.close()
         args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
                 'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
                 'gradient_clip': 0.1}
@@ -53,10 +59,9 @@ class GrafbotAgent:
         args['override'] = {'model': 'transformer/polyencoder',
                             'model_file': '/data1/home/mrim/bentebia/anaconda3/envs/grafbot/lib/python3.7/site-packages/data/models/pretrained_transformers/model_poly/model',
                             'encode_candidate_vecs': True, 'eval_candidates': 'fixed',
-                            'fixed_candidates_path': 'candidates.txt'}
+                            'fixed_candidates_path': 'candidates{}.txt'.format(ip)}
 
-        agent = create_agent(args)
-        return agent
+        self.polyencoder = create_agent(args)
 
     def speak(self, reply_text):
         print("Reply : "+reply_text)
@@ -69,7 +74,19 @@ class GrafbotAgent:
         stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")
         print(stories)
-        self.addStoriesLive(stories)
+
+        m = min(3, len(stories))
+        good_stories = []
+        for p in range(m):
+            os.remove('candidates{}.txt'.format(self.ip))
+            f = open('candidates{}.txt'.format(self.ip), "a")
+            for story in [e for e in stories if not e in good_stories]:
+                f.write(story+"\n")
+            self.polyencoder.observe({'episode_done': False,
+                           'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
+            good_stories.append(self.polyencoder.act().text)
+        self.addStoriesLive(good_stories)
+        self.history.append(english_version_of_user_input)
         reply = {'episode_done': False, 'text': english_version_of_user_input}
         self.get('agent').observe(reply)
         model_res = self.get('agent').act()

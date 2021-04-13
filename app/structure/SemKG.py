@@ -1,10 +1,17 @@
 import json
 import numpy as np
+import nltk
 import joblib
 import pandas as pd
 import hdbscan
+from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEmbedding
+from tools.Compressor import compressVectorDfdim1Todim2
+from nltk.corpus import stopwords
+
+
 
 class SemKG:
+    nltk.download('stopwords')
     graph = dict()
     graphNodeId = dict()
     graphNeighbour = dict()
@@ -122,6 +129,31 @@ class SemKG:
                 minDist = currentDist
         return idx
 
+    def learn(self, personas):
+        for persona in personas:
+            embed = concatEmbeddingEn(getContextualEmbedding(persona, False))
+            df2 = pd.DataFrame(embed[0])
+            df2 = compressVectorDfdim1Todim2(df2)
+            df2['word'] = [s.replace("</w>", "") for s in embed[1]]
+            sentences = []
+            doc = ' '.join(embed[1])
+            h = 0
+            windows_size = 10
+            for word in embed[1]:
+                sentences.append(doc[min(0, h - windows_size):min(len(embed[1]), h + windows_size)])
+                h += 1
+            df2['sentence'] = sentences
+            df2 = df2[~df2.word.isin(stopwords.words('english'))]
+            data_formatted = []
+            for col in dfWiki.columns:
+                if col != "word" and col != "sentence":
+                    data_formatted.append(df2[col].tolist())
+            data = np.array(data_formatted[0:768]).T
+            labels = self.hdbscan_model.fit_predict(data)
+            df2['clusterid'] = labels
+            print(df2.head(), flush=True)
+            dfWiki = pd.concat([dfWiki, df2])
+
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
         dfVector = pd.DataFrame(entities_vector)
         data_formatted = []
@@ -129,24 +161,13 @@ class SemKG:
             if col != "word":
                 data_formatted.append(dfVector[col].tolist())
         data = np.array(data_formatted[0:32]).T
-        labels = hdbscan_model.predict(data)
+        labels = self.hdbscan_model.predict(data)
         data['word'] = entities_word
         data['clusterid'] = labels
         stories = []
         for index, row in data.iterrows():
             v = row.values.T
-            cluster = dfWiki[dfWiki.clusterid == row.clusterid]
-            stories.append(cluster.iloc[get_nearest_member_of_cluster(v, cluster)].sentence)
+            cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
+            stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v, cluster)].sentence)
 
-        '''graph_nodes_neighbours = list()
-        for e in entities:
-            propa = self.semantic_propagation(e, steps, 0)
-            for s in propa:
-                if(s not in graph_nodes_neighbours):
-                    graph_nodes_neighbours.append(s)'''
-       '''print(entities)
-        stories = epikg.get_stories([self.graphNodeId[e] for e in entities if e in list(self.graphNodeId.keys())], top_n, steps)'''
-        add_to_persona = []
-        for story in stories:
-            add_to_persona.append('. '.join(story.sentence))
-        return add_to_persona
+        return stories

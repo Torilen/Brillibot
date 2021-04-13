@@ -50,7 +50,7 @@ class CreateAgent(Resource):
         persona = json.loads(request.form['data'])
         print(persona)
         shared_temp = SHARED.copy()
-        SHARED[request.remote_addr] = GrafbotAgent(personality=persona)
+        SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr)
         if (request.remote_addr not in list(shared_temp.keys())):
             res = dict()
             res['creation'] = 1

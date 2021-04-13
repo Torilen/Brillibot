@@ -66,5 +66,5 @@ if len(args) > 1:
 else:
     compressor = keras.models.load_model('../models/compressor')
 
-def compressVector(v):
-    return compressor.predict([v])
+def compressVectorDfdim1Todim2(df):
+    return pd.DataFrame(compressor.predict(df.to_numpy()))
