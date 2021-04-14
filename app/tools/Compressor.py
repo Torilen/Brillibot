@@ -50,8 +50,9 @@ if len(args) > 1:
         print("Read file", flush=True)
         dfWiki = pd.read_json(args[2])
         words = dfWiki['word']
+        sentences = dfWiki['sentence']
         print("Drop words", flush=True)
-        data = dfWiki.drop(['word'], axis=1)
+        data = dfWiki.drop(['word', 'sentence'], axis=1)
         data = data.to_numpy()
         print("Loading compressor", flush=True)
         compressor = keras.models.load_model('../models/compressor')
