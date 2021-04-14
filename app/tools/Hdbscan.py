@@ -18,7 +18,7 @@ if len(args) > 1:
         dfWiki = dfWiki[~dfWiki.word.isin(stopwords.words('english'))]
         data_formatted = []
         for col in dfWiki.columns:
-            if col != "word":
+            if col != "word" and col != "sentence":
                 data_formatted.append(dfWiki[col].tolist())
         data = np.array(data_formatted[0:768]).T
         labels = model.fit_predict(data)
