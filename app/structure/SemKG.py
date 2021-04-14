@@ -17,7 +17,7 @@ class SemKG:
     graphNeighbour = dict()
 
     hdbscan_model = joblib.load('../models/hdbscan_trained.pkl')
-    dfWiki = pd.read_json('../tools/0-340-dfWiki-compressed-clustered.json')
+    dfWiki = pd.read_json('../tools/0-330-dfWiki-compressed-clustered.json')
 
     def get_occur_relation(self, s, o):
         return self.graph[(s, o)]
