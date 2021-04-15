@@ -13,3 +13,7 @@ google-cloud
 google-cloud-translate
 google-cloud-texttospeech
 flask-restplus
+pyOpenSSL
+nltk
+joblib
+hdbscan
