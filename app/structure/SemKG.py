@@ -7,6 +7,7 @@ import hdbscan
 from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEmbedding
 import tools.Compressor
 from nltk.corpus import stopwords
+import keras
 
 
 
@@ -18,6 +19,7 @@ class SemKG:
 
     hdbscan_model = joblib.load('./app/models/hdbscan_trained.pkl')
     dfWiki = pd.read_json('./app/tools/0-330-dfWiki-compressed-clustered.json')
+    compressor = keras.models.load_model('../models/compressor')
 
     def get_occur_relation(self, s, o):
         return self.graph[(s, o)]
@@ -133,7 +135,7 @@ class SemKG:
         for persona in personas:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=False))
             df2 = pd.DataFrame(embed[0])
-            df2 = tools.Compressor.compressVectorDfdim1Todim2(df2)
+            df2 = tools.Compressor.compressVectorDfdim1Todim2(df2, self.compressor)
             df2['word'] = [s.replace("</w>", "") for s in embed[1]]
             sentences = []
             doc = ' '.join(embed[1])
