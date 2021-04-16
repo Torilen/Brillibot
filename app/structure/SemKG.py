@@ -163,7 +163,7 @@ class SemKG:
             if col != "word":
                 data_formatted.append(dfVector[col].tolist())
         data = np.array(data_formatted[0:32]).T
-        labels = self.hdbscan_model.predict(data)
+        labels = self.hdbscan_model.approximate_predict(data)
         data['word'] = entities_word
         data['clusterid'] = labels
         stories = []
