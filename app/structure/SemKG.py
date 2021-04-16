@@ -150,7 +150,7 @@ class SemKG:
             for col in df2.columns:
                 if col != "word" and col != "sentence":
                     data_formatted.append(df2[col].tolist())
-            data = np.array(data_formatted[0:768]).T
+            data = np.array(data_formatted[0:32]).T
             labels = self.hdbscan_model.fit_predict(data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
@@ -160,7 +160,7 @@ class SemKG:
         dfVector = pd.DataFrame(entities_vector)
         data_formatted = []
         for col in dfVector.columns:
-            if col != "word":
+            if col != "word" and col != "sentence":
                 data_formatted.append(dfVector[col].tolist())
         data = np.array(data_formatted[0:32]).T
         labels = self.hdbscan_model.approximate_predict(data)
