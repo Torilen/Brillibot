@@ -32,7 +32,7 @@ class GrafbotAgent:
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
-        self.initPolyEncoder(ip)
+        self.initPolyEncoder(ip, personality[3:])
 
     def addStoriesLive(self, personality):
         self.history += personality
@@ -45,8 +45,9 @@ class GrafbotAgent:
     def learn(self, sentences):
         self.semkg.learn(sentences)
 
-    def initPolyEncoder(self, ip):
+    def initPolyEncoder(self, ip, personality):
         f = open('candidates{}.txt'.format(ip), "w")
+        f.write(' \n'.join(["your persona: " + personaField for personaField in personality]))
         f.close()
         args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
                 'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
