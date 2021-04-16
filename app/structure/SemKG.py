@@ -152,7 +152,7 @@ class SemKG:
                     data_formatted.append(df2[col].tolist())
             data = np.array(data_formatted[0:32]).T
             self.hdbscan_model.fit(data)
-            labels = hdbscan.approximate_predict(self.hdbscan_model, data)
+            labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
             self.dfWiki = pd.concat([self.dfWiki, df2])
@@ -164,7 +164,7 @@ class SemKG:
             if col != "word" and col != "sentence":
                 data_formatted.append(dfVector[col].tolist())
         data = np.array(data_formatted[0:32]).T
-        labels = hdbscan.approximate_predict(self.hdbscan_model, data)
+        labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
         data['word'] = entities_word
         data['clusterid'] = labels
         stories = []
