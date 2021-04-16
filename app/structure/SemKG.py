@@ -147,14 +147,14 @@ class SemKG:
             df2['sentence'] = sentences
             df2 = df2[~df2.word.isin(stopwords.words('english'))]
             data_formatted = []
-            for col in dfWiki.columns:
+            for col in df2.columns:
                 if col != "word" and col != "sentence":
                     data_formatted.append(df2[col].tolist())
             data = np.array(data_formatted[0:768]).T
             labels = self.hdbscan_model.fit_predict(data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
-            dfWiki = pd.concat([dfWiki, df2])
+            self.dfWiki = pd.concat([self.dfWiki, df2])
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
         dfVector = pd.DataFrame(entities_vector)
