@@ -5,7 +5,7 @@ import joblib
 import pandas as pd
 import hdbscan
 from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEmbedding
-from tools.Compressor import compressVectorDfdim1Todim2
+import tools.Compressor
 from nltk.corpus import stopwords
 
 
@@ -133,7 +133,7 @@ class SemKG:
         for persona in personas:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=False))
             df2 = pd.DataFrame(embed[0])
-            df2 = compressVectorDfdim1Todim2(df2)
+            df2 = tools.Compressor.compressVectorDfdim1Todim2(df2)
             df2['word'] = [s.replace("</w>", "") for s in embed[1]]
             sentences = []
             doc = ' '.join(embed[1])
