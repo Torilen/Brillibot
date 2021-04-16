@@ -46,7 +46,7 @@ class GrafbotAgent:
         self.semkg.learn(sentences)
 
     def initPolyEncoder(self, ip):
-        f = open('candidates{}.txt'.format(ip), "x")
+        f = open('candidates{}.txt'.format(ip), "w")
         f.close()
         args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
                 'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
