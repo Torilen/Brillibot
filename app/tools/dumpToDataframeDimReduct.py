@@ -27,7 +27,7 @@ p = content.split('\n')
 print("{} articles to processed".format(len(p)), flush=True)
 for sentence in p:
   for sent in range(len(sentence.split())-500):
-    embed = getContextualEmbedding(tokenizer, model, sentence[sent*500:(sent+1)*500])
+    embed = getContextualEmbedding(sentence[sent*500:(sent+1)*500], verbose=False, tokenizer=tokenizer, model=model)
     embed = concatEmbeddingEn(embed)
     df2 = pd.DataFrame(embed[0])
     df2['word'] = [s.replace("</w>", "") for s in embed[1]]

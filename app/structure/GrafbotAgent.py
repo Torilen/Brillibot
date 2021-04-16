@@ -69,7 +69,7 @@ class GrafbotAgent:
         #user_language = "en"
         english_version_of_user_input = translate_base(reply_text, src=user_language)
         #english_version_of_user_input = reply_text
-        embedded = concatEmbeddingEn(getContextualEmbedding(english_version_of_user_input, False))
+        embedded = concatEmbeddingEn(getContextualEmbedding(english_version_of_user_input, verbose=False))
         entities = get_entities(english_version_of_user_input)
         stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")

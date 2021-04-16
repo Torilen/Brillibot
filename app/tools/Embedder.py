@@ -21,7 +21,7 @@ def processString(s):
     s = s.lower()
     return s
 
-def getContextualEmbedding(tokenizer, model, sentence, verbose=False):
+def getContextualEmbedding(sentence, verbose=False, tokenizer=tokenizer, model=model):
   sentence = processString(sentence)
   tokens = tokenizer.tokenize(sentence)
   tokens = ['[CLS]'] + tokens + ['[SEP]']

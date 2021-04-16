@@ -131,7 +131,7 @@ class SemKG:
 
     def learn(self, personas):
         for persona in personas:
-            embed = concatEmbeddingEn(getContextualEmbedding(persona, False))
+            embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=False))
             df2 = pd.DataFrame(embed[0])
             df2 = compressVectorDfdim1Todim2(df2)
             df2['word'] = [s.replace("</w>", "") for s in embed[1]]
