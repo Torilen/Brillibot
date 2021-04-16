@@ -19,7 +19,7 @@ class SemKG:
 
     hdbscan_model = joblib.load('./app/models/hdbscan_trained.pkl')
     dfWiki = pd.read_json('./app/tools/0-330-dfWiki-compressed-clustered.json')
-    compressor = keras.models.load_model('../models/compressor')
+    compressor = keras.models.load_model('./app/models/compressor')
 
     def get_occur_relation(self, s, o):
         return self.graph[(s, o)]
