@@ -6,7 +6,12 @@ from keras import regularizers
 from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
+from os import path
 
+compressor = None
+
+if path.exists('../models/compressor'):
+    compressor = keras.models.load_model('../models/compressor')
 
 args = sys.argv
 print(args)
