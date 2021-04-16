@@ -27,12 +27,12 @@ class GrafbotAgent:
         self.opt = self.parser.parse_args(print_args=False)
         self.opt['task'] = 'parlai.agents.local_human.local_human:LocalHumanAgent'
         self.agent = create_agent(self.opt, requireModelExists=True)
-        self.addStoriesLive(personality[:3])
-        self.learn(personality[3:])
+        self.addStoriesLive(personality)
+        self.learn(personality)
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
-        self.initPolyEncoder(ip, personality[3:])
+        self.initPolyEncoder(ip, personality)
 
     def addStoriesLive(self, personality):
         self.history += personality
