@@ -90,6 +90,7 @@ class GrafbotAgent:
         else:
             print("I don't remember anything", flush=True)
         self.history.append(english_version_of_user_input)
+        print(self.history, flush=True)
         reply = {'episode_done': False, 'text': english_version_of_user_input}
         self.agent.observe(reply)
         model_res = self.agent.act()
