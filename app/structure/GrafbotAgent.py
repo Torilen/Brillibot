@@ -32,7 +32,8 @@ class GrafbotAgent:
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
-        self.polyencoderagent = self.initPolyEncoder(ip, personality)
+        args, self.polyencoderagent = self.initPolyEncoder(ip, personality)
+        self.world2 = create_task(args, self.polyencoderagent)
 
     def addStoriesLive(self, personality):
         self.history += personality
@@ -62,7 +63,7 @@ class GrafbotAgent:
                             'encode_candidate_vecs': True, 'eval_candidates': 'fixed',
                             'fixed_candidates_path': 'candidates{}.txt'.format(ip)}
 
-        return create_agent(args)
+        return args, create_agent(args)
 
     def speak(self, reply_text):
         print("Reply : "+reply_text)
