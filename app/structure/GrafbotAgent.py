@@ -33,7 +33,6 @@ class GrafbotAgent:
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
         args, self.polyencoderagent = self.initPolyEncoder(ip, personality)
-        self.world2 = create_task(args, self.polyencoderagent)
 
     def addStoriesLive(self, personality):
         self.history += personality
