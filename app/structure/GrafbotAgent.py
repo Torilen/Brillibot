@@ -75,18 +75,20 @@ class GrafbotAgent:
         stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")
         print(stories)
-
-        m = min(3, len(stories))
-        good_stories = []
-        for p in range(m):
-            os.remove('candidates{}.txt'.format(self.ip))
-            f = open('candidates{}.txt'.format(self.ip), "a")
-            for story in [e for e in stories if not e in good_stories]:
-                f.write(story+"\n")
-            self.polyencoder.observe({'episode_done': False,
-                           'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
-            good_stories.append(self.polyencoder.act().text)
-        self.addStoriesLive(good_stories)
+        if len(stories) > 1:
+            m = min(3, len(stories))
+            good_stories = []
+            for p in range(m):
+                os.remove('candidates{}.txt'.format(self.ip))
+                f = open('candidates{}.txt'.format(self.ip), "a")
+                for story in [e for e in stories if not e in good_stories]:
+                    f.write(story+"\n")
+                self.polyencoder.observe({'episode_done': False,
+                               'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
+                good_stories.append(self.polyencoder.act().text)
+            self.addStoriesLive(good_stories)
+        else:
+            print("I don't remember anything", flush=True)
         self.history.append(english_version_of_user_input)
         reply = {'episode_done': False, 'text': english_version_of_user_input}
         self.get('agent').observe(reply)

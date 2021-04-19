@@ -170,13 +170,17 @@ class SemKG:
         print("TO SPEAK", flush=True)
         print(data, flush=True)
         print(data.shape, flush=True)
-        labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
-        data['word'] = entities_word
-        data['clusterid'] = labels
+
         stories = []
-        for index, row in data.iterrows():
-            v = row.values.T
-            cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-            stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v, cluster)].sentence)
+
+        if data.shape[0] > 0:
+            labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
+            data['word'] = entities_word
+            data['clusterid'] = labels
+
+            for index, row in data.iterrows():
+                v = row.values.T
+                cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
+                stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v, cluster)].sentence)
 
         return stories
