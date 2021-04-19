@@ -142,7 +142,7 @@ class SemKG:
             h = 0
             windows_size = 10
             for word in embed[1]:
-                sentences.append(doc[min(0, h - windows_size):min(len(embed[1]), h + windows_size)])
+                sentences.append(doc[max(0, h - windows_size):min(len(embed[1]), h + windows_size)])
                 h += 1
             df2['sentence'] = sentences
             df2 = df2[~df2.word.isin(stopwords.words('english'))]
