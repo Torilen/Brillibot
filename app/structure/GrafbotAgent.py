@@ -32,7 +32,7 @@ class GrafbotAgent:
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
-        self.initPolyEncoder(ip, personality)
+        self.polyencoderagent = self.initPolyEncoder(ip, personality)
 
     def addStoriesLive(self, personality):
         self.history += personality
@@ -62,7 +62,7 @@ class GrafbotAgent:
                             'encode_candidate_vecs': True, 'eval_candidates': 'fixed',
                             'fixed_candidates_path': 'candidates{}.txt'.format(ip)}
 
-        self.polyencoder = create_agent(args)
+        return create_agent(args)
 
     def speak(self, reply_text):
         print("Reply : "+reply_text)
@@ -83,16 +83,16 @@ class GrafbotAgent:
                 f = open('candidates{}.txt'.format(self.ip), "a")
                 for story in [e for e in stories if not e in good_stories]:
                     f.write(story+"\n")
-                self.polyencoder.observe({'episode_done': False,
+                self.polyencoderagent.observe({'episode_done': False,
                                'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
-                good_stories.append(self.polyencoder.act().text)
+                good_stories.append(self.polyencoderagent.act().text)
             self.addStoriesLive(good_stories)
         else:
             print("I don't remember anything", flush=True)
         self.history.append(english_version_of_user_input)
         reply = {'episode_done': False, 'text': english_version_of_user_input}
-        self.get('agent').observe(reply)
-        model_res = self.get('agent').act()
+        self.agent.observe(reply)
+        model_res = self.agent.act()
 
         json_return = dict()
 
