@@ -140,11 +140,11 @@ class SemKG:
             sentences = []
             doc = ' '.join(embed[1])
             h = 0
-            windows_size = 10
+            windows_size = 20
             print(doc, flush=True)
             print(embed[1], flush=True)
             for word in embed[1]:
-                sentences.append(' '.join(doc[max(0, h - windows_size):min(len(embed[1]), h + windows_size)]))
+                sentences.append(' '.join(embed[1][max(0, h - windows_size):min(len(embed[1]), h + windows_size)]))
                 h += 1
             print(sentences, flush=True)
             df2['sentence'] = sentences
