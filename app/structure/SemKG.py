@@ -121,6 +121,9 @@ class SemKG:
         return l
 
     def get_nearest_member_of_cluster(self, source, cluster_target):
+        print(cluster_target, flush=True)
+        print(cluster_target.values, flush=True)
+        print(cluster_target.values.T, flush=True)
         clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values.T
         print(clusterDf.shape)
         minDist = np.dot(source, clusterDf[0])
