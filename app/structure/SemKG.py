@@ -181,9 +181,11 @@ class SemKG:
             dfVector['word'] = entities_word
             dfVector['clusterid'] = labels
 
-            for index, row in data.iterrows():
+            for index, row in dfVector.iterrows():
                 v = row.values.T
+                print("GET STORIES", flush=True)
+                print(v, flush=True)
                 cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
                 stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v, cluster)].sentence)
 
-        return stories
+        return list(set(stories))
