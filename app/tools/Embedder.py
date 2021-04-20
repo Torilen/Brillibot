@@ -71,6 +71,7 @@ def concatEmbeddingFr(embeddings):
   return [result_V, result]
 
 def concatEmbeddingEn(embeddings):
+  print("CONCAT", flush=True)
   i = 0
   result_V = []
   result = []
@@ -102,5 +103,6 @@ def concatEmbeddingEn(embeddings):
 
     i+=1
   result_V = np.array(result_V)
+  print(result, flush=True)
   print(result_V.shape, flush=True)
   return [result_V, result]
