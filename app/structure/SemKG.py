@@ -121,7 +121,8 @@ class SemKG:
         return l
 
     def get_nearest_member_of_cluster(self, source, cluster_target):
-        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values
+        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values.T
+        print(clusterDf.shape)
         minDist = np.dot(source, clusterDf[0])
         idx = 0
         for i in range(1, clusterDf.shape[0]):
@@ -164,7 +165,7 @@ class SemKG:
             self.dfWiki = pd.concat([self.dfWiki, df2])
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
-        dfVector = pd.DataFrame(entities_vector)
+        dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
         data_formatted = []
         for col in dfVector.columns:
             if col != "word" and col != "sentence":
