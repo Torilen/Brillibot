@@ -125,9 +125,9 @@ class SemKG:
         minDist = np.dot(source, clusterDf.iloc[0])
         idx = 0
         for i in range(1, len(clusterDf)):
-            currentDist = np.dot(source, clusterDf.iloc[1])
+            currentDist = np.dot(source, clusterDf.iloc[i])
             if currentDist < minDist:
-                idx = 0
+                idx = i
                 minDist = currentDist
         return idx
 
