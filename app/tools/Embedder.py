@@ -76,6 +76,7 @@ def concatEmbeddingEn(embeddings):
   result = []
   temp_V = []
   temp = []
+  print(embeddings[1], flush=True)
   for elem in embeddings[1]:
     if not "##" in elem:
       if len(temp) == 0:
