@@ -186,7 +186,7 @@ class SemKG:
                 print("GET STORIES", flush=True)
                 print(v, flush=True)
                 cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-                if not cluster == -1:
-                    stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v, cluster)].sentence)
+                if not (int(cluster) == -1):
+                    stories.append(cluster.iloc[self.get_nearest_member_of_cluster(v[:-2], cluster)].sentence)
 
         return list(set(stories))
