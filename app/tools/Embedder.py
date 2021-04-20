@@ -101,4 +101,5 @@ def concatEmbeddingEn(embeddings):
 
     i+=1
   result_V = np.array(result_V)
+  print(result_V.shape, flush=True)
   return [result_V, result]
