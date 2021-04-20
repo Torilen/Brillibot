@@ -72,36 +72,35 @@ def concatEmbeddingFr(embeddings):
 
 def concatEmbeddingEn(embeddings):
   print("CONCAT", flush=True)
-  i = 0
   result_V = []
   result = []
   temp_V = []
   temp = []
   print(embeddings[1], flush=True)
-  for elem in embeddings[1]:
-    if not "##" in elem:
+  for i in range(len(embeddings[1])-1):
+    if not "##" in embeddings[1][i+1]:
       if len(temp) == 0:
+        result_V.append(embeddings[0][i])
+        result.append(embeddings[1][i])
+      else:
         temp_V.append(embeddings[0][i])
-        temp.append(elem)
-      if len(temp) == 1:
-        result_V.append(temp_V[0])
-        result.append(temp[0])
-        temp_V = []
-        temp = []
-        temp_V.append(embeddings[0][i])
-        temp.append(elem)
-      if len(temp) > 1:
+        temp.append(embeddings[1][i].replace('##', ''))
         result_V.append(np.mean(np.array(temp_V), axis=0).tolist())
         result.append(''.join(temp))
         temp_V = []
         temp = []
-        temp_V.append(embeddings[0][i])
-        temp.append(elem)
     else:
       temp_V.append(embeddings[0][i])
-      temp.append(elem.replace('##', ''))
+      temp.append(embeddings[1][i].replace('##', ''))
 
-    i+=1
+  if len(temp) > 0:
+    temp.append(embeddings[1][len(embeddings[1])].replace('##', ''))
+    temp_V.append(embeddings[0][len(embeddings[1])])
+    result_V.append(np.mean(np.array(temp_V), axis=0).tolist())
+    result.append(''.join(temp))
+  else:
+    result_V.append(embeddings[0][len(embeddings[1])])
+    result.append(embeddings[1][len(embeddings[1])])
   result_V = np.array(result_V)
   print(result, flush=True)
   print(result_V.shape, flush=True)
