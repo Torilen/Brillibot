@@ -94,8 +94,8 @@ def concatEmbeddingEn(embeddings):
       temp.append(embeddings[1][i].replace('##', ''))
 
   if len(temp) > 0:
-    temp.append(embeddings[1][len(embeddings[1])].replace('##', ''))
-    temp_V.append(embeddings[0][len(embeddings[1])])
+    temp.append(embeddings[1][len(embeddings[1])-1].replace('##', ''))
+    temp_V.append(embeddings[0][len(embeddings[1])-1])
     result_V.append(np.mean(np.array(temp_V), axis=0).tolist())
     result.append(''.join(temp))
   else:
