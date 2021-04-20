@@ -122,10 +122,10 @@ class SemKG:
 
     def get_nearest_member_of_cluster(self, source, cluster_target):
         clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values.T
-        minDist = np.dot(source, clusterDf.iloc[0])
+        minDist = np.dot(source, clusterDf[0])
         idx = 0
-        for i in range(1, len(clusterDf)):
-            currentDist = np.dot(source, clusterDf.iloc[i])
+        for i in range(1, clusterDf.shape[0]):
+            currentDist = np.dot(source, clusterDf[i])
             if currentDist < minDist:
                 idx = i
                 minDist = currentDist
