@@ -178,8 +178,8 @@ class SemKG:
 
         if data.shape[0] > 0:
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
-            data['word'] = entities_word
-            data['clusterid'] = labels
+            dfVector['word'] = entities_word
+            dfVector['clusterid'] = labels
 
             for index, row in data.iterrows():
                 v = row.values.T
