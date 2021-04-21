@@ -124,7 +124,7 @@ class SemKG:
         print(cluster_target, flush=True)
         print(cluster_target.values, flush=True)
         print(cluster_target.values.T, flush=True)
-        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values.T
+        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values
         print(clusterDf.shape)
         minDist = np.dot(source, clusterDf[0])
         idx = 0
