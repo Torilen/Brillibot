@@ -71,12 +71,12 @@ def concatEmbeddingFr(embeddings):
   return [result_V, result]
 
 def concatEmbeddingEn(embeddings):
-  print("CONCAT", flush=True)
+  #print("CONCAT", flush=True)
   result_V = []
   result = []
   temp_V = []
   temp = []
-  print(embeddings[1], flush=True)
+  #print(embeddings[1], flush=True)
   for i in range(len(embeddings[1])-1):
     if not "##" in embeddings[1][i+1]:
       if len(temp) == 0:
@@ -103,6 +103,6 @@ def concatEmbeddingEn(embeddings):
       result_V.append(embeddings[0][len(embeddings[1])-1])
       result.append(embeddings[1][len(embeddings[1])-1])
   result_V = np.array(result_V)
-  print(result, flush=True)
-  print(result_V.shape, flush=True)
+  #print(result, flush=True)
+  #print(result_V.shape, flush=True)
   return [result_V, result]
