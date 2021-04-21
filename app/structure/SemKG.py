@@ -8,6 +8,7 @@ from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEm
 import tools.Compressor
 from nltk.corpus import stopwords
 import keras
+import subprocess
 
 
 
@@ -19,6 +20,8 @@ class SemKG:
 
     hdbscan_model = joblib.load('./app/models/hdbscan_trained.pkl')
     dfWiki = pd.read_json('./app/tools/0-330-dfWiki-compressed-clustered.json')
+    print("DFWIKI", flush=True)
+    print(dfWiki, flush=True)
     compressor = keras.models.load_model('./app/models/compressor')
 
     def get_occur_relation(self, s, o):
@@ -137,7 +140,7 @@ class SemKG:
 
     def learn(self, personas):
         for persona in personas:
-            embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=False))
+            embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=True))
             df2 = pd.DataFrame(embed[0])
             df2 = tools.Compressor.compressVectorDfdim1Todim2(df2, self.compressor)
             df2['word'] = [s.replace("</w>", "") for s in embed[1]]
@@ -165,7 +168,9 @@ class SemKG:
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
+            print(self.dfWiki)
             self.dfWiki = pd.concat([self.dfWiki, df2])
+            print(self.dfWiki)
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
         dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
