@@ -93,14 +93,15 @@ def concatEmbeddingEn(embeddings):
       temp_V.append(embeddings[0][i])
       temp.append(embeddings[1][i].replace('##', ''))
 
-  if len(temp) > 0:
-    temp.append(embeddings[1][len(embeddings[1])-1].replace('##', ''))
-    temp_V.append(embeddings[0][len(embeddings[1])-1])
-    result_V.append(np.mean(np.array(temp_V), axis=0).tolist())
-    result.append(''.join(temp))
-  else:
-    result_V.append(embeddings[0][len(embeddings[1])-1])
-    result.append(embeddings[1][len(embeddings[1])-1])
+  if len(embeddings[1]) > 0:
+    if len(temp) > 0:
+      temp.append(embeddings[1][len(embeddings[1])-1].replace('##', ''))
+      temp_V.append(embeddings[0][len(embeddings[1])-1])
+      result_V.append(np.mean(np.array(temp_V), axis=0).tolist())
+      result.append(''.join(temp))
+    else:
+      result_V.append(embeddings[0][len(embeddings[1])-1])
+      result.append(embeddings[1][len(embeddings[1])-1])
   result_V = np.array(result_V)
   print(result, flush=True)
   print(result_V.shape, flush=True)
