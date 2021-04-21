@@ -19,7 +19,7 @@ else:
 def processString(s):
     s = re.sub(r'[^\w\s]', ' ', s)
     s = s.lower()
-    print('SENTENCE PROCESSED : {}'.format(s))
+    #print('SENTENCE PROCESSED : {}'.format(s))
     return s
 
 def getContextualEmbedding(sentence, verbose=False, tokenizer=tokenizer, model=model):
