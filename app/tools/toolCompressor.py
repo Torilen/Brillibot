@@ -60,6 +60,7 @@ if len(args) > 1:
         data_compressed = compressor.predict(data)
         dfWikiCompressed = pd.DataFrame(data_compressed)
         dfWikiCompressed['word'] = words
+        dfWikiCompressed['sentence'] = sentences
         print("Save compressed file", flush=True)
         dfWikiCompressed.to_json(args[2].replace('.json', '-compressed.json'))
         print("Finish", flush=True)
