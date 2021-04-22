@@ -154,6 +154,7 @@ class SemKG:
             for word in embed[1]:
                 sentences.append(' '.join(embed[1][max(0, h - windows_size):min(len(embed[1]), h + windows_size)]))
                 h += 1
+            print("SENTENCES", flush=True)
             print(sentences, flush=True)
             df2['sentence'] = sentences
             df2 = df2[~df2.word.isin(stopwords.words('english'))]
@@ -169,9 +170,9 @@ class SemKG:
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
-            print(df2.columns)
-            print(self.dfWiki.columns)
-            print(self.dfWiki)
+            print(df2.columns, flush=True)
+            print(self.dfWiki.columns, flush=True)
+            print(self.dfWiki, flush=True)
             self.dfWiki = pd.concat([self.dfWiki, df2])
             print(self.dfWiki)
 
