@@ -143,6 +143,7 @@ class SemKG:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=True))
             df2 = pd.DataFrame(embed[0])
             df2 = tools.Compressor.compressVectorDfdim1Todim2(df2, self.compressor)
+            df2 = df2.rename(columns=str)
             df2['word'] = [s.replace("</w>", "") for s in embed[1]]
             sentences = []
             doc = ' '.join(embed[1])
@@ -168,6 +169,8 @@ class SemKG:
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
             print(df2.head(), flush=True)
+            print(df2.columns)
+            print(self.dfWiki.columns)
             print(self.dfWiki)
             self.dfWiki = pd.concat([self.dfWiki, df2])
             print(self.dfWiki)
