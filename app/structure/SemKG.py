@@ -19,7 +19,7 @@ class SemKG:
     graphNeighbour = dict()
 
     hdbscan_model = joblib.load('./app/models/hdbscan_trained.pkl')
-    dfWiki = pd.read_json('./app/tools/0-330-dfWiki-compressed-clustered.json')
+    dfWiki = pd.read_json('./app/tools/0-380-dfWiki-compressed-clustered.json')
     print("DFWIKI", flush=True)
     print(dfWiki, flush=True)
     compressor = keras.models.load_model('./app/models/compressor')
