@@ -173,7 +173,7 @@ class SemKG:
             print(df2.columns, flush=True)
             print(self.dfWiki.columns, flush=True)
             print(self.dfWiki, flush=True)
-            self.dfWiki = pd.concat([self.dfWiki, df2])
+            self.dfWiki = pd.concat([self.dfWiki, df2]).reset_index(drop=True)
             print(self.dfWiki)
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
