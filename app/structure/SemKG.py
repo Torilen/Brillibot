@@ -124,7 +124,7 @@ class SemKG:
                 return l
         return l
 
-    def get_nearest_member_of_cluster(self, source, cluster_target):
+    def get_nearest_member_of_cluster(self, source, cluster_target, top_n):
         print(cluster_target, flush=True)
         print(cluster_target.values, flush=True)
         print(cluster_target.values.T, flush=True)
@@ -132,7 +132,7 @@ class SemKG:
         print(clusterDf.shape)
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
-        return list(clusterDfsorted.head(5).index)
+        return list(clusterDfsorted.head(top_n).index)
 
     def learn(self, personas):
         for persona in personas:
@@ -195,7 +195,7 @@ class SemKG:
                 print("GET STORIES", flush=True)
                 print(v, flush=True)
                 cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-                result = self.get_nearest_member_of_cluster(v[:-2], cluster)
+                result = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
                 stories += list(cluster.loc[result].sentence.values)
 
         return list(set(stories))
