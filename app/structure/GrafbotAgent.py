@@ -78,15 +78,20 @@ class GrafbotAgent:
         if len(stories) > 1:
             m = min(3, len(stories))
             good_stories = []
+            print("CREATE CANDIDATES", flush=True)
             for p in range(m):
                 os.remove('candidates{}.txt'.format(self.ip))
                 f = open('candidates{}.txt'.format(self.ip), "a")
                 for story in [e for e in stories if not e in good_stories]:
                     f.write(story+"\n")
+                print(f.read(), flush=True)
                 f.close()
+                print("OBSERVE", flush=True)
                 self.polyencoderagent.observe({'episode_done': False,
                                'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
+                print("ACT", flush=True)
                 res = self.polyencoderagent.act()
+                print("PRINT ACT", flush=True)
                 print(res, flush=True)
                 good_stories.append(res['text'])
             self.addStoriesLive(good_stories)
