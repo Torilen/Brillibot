@@ -173,29 +173,32 @@ class SemKG:
             print(self.dfWiki)
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
-        dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
-        data_formatted = []
-        for col in dfVector.columns:
-            if col != "word" and col != "sentence":
-                data_formatted.append(dfVector[col].tolist())
-        data = np.array(data_formatted[0:32]).T
-        print("TO SPEAK", flush=True)
-        print(data, flush=True)
-        print(data.shape, flush=True)
+        if len(entities_word) > 0:
+            dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
+            data_formatted = []
+            for col in dfVector.columns:
+                if col != "word" and col != "sentence":
+                    data_formatted.append(dfVector[col].tolist())
+            data = np.array(data_formatted[0:32]).T
+            print("TO SPEAK", flush=True)
+            print(data, flush=True)
+            print(data.shape, flush=True)
 
-        stories = []
+            stories = []
 
-        if data.shape[0] > 0:
-            labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
-            dfVector['word'] = entities_word
-            dfVector['clusterid'] = labels
+            if data.shape[0] > 0:
+                labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
+                dfVector['word'] = entities_word
+                dfVector['clusterid'] = labels
 
-            for index, row in dfVector.iterrows():
-                v = row.values.T
-                print("GET STORIES", flush=True)
-                print(v, flush=True)
-                cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-                result = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
-                stories += list(cluster.loc[result].sentence.values)
+                for index, row in dfVector.iterrows():
+                    v = row.values.T
+                    print("GET STORIES", flush=True)
+                    print(v, flush=True)
+                    cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
+                    result = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
+                    stories += list(cluster.loc[result].sentence.values)
 
-        return list(set(stories))
+            return list(set(stories))
+        else:
+            return list()
