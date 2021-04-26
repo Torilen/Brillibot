@@ -88,7 +88,7 @@ class GrafbotAgent:
                                'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
                 res = self.polyencoderagent.act()
                 print(res, flush=True)
-                good_stories.append(self.polyencoderagent.act().text)
+                good_stories.append(self.polyencoderagent.act()['text'])
             self.addStoriesLive(good_stories)
         else:
             print("I don't remember anything", flush=True)
