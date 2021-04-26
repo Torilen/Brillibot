@@ -8,6 +8,7 @@ from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEm
 import tools.Compressor
 from nltk.corpus import stopwords
 import keras
+from scipy import spatial
 import subprocess
 
 
@@ -129,14 +130,9 @@ class SemKG:
         print(cluster_target.values.T, flush=True)
         clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1).values
         print(clusterDf.shape)
-        minDist = np.dot(source, clusterDf[0])
-        idx = 0
-        for i in range(1, clusterDf.shape[0]):
-            currentDist = np.dot(source, clusterDf[i])
-            if currentDist < minDist:
-                idx = i
-                minDist = currentDist
-        return idx
+        clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
+        clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
+        return list(clusterDfsorted.head(5).index)
 
     def learn(self, personas):
         for persona in personas:
