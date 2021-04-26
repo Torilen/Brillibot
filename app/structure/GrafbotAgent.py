@@ -84,7 +84,8 @@ class GrafbotAgent:
                 f = open('candidates{}.txt'.format(self.ip), "a")
                 for story in [e for e in stories if not e in good_stories]:
                     f.write(story+"\n")
-                print(f.read(), flush=True)
+                print("CONTENT CANDIDATES", flush=True)
+                print([e for e in stories if not e in good_stories], flush=True)
                 f.close()
                 print("OBSERVE", flush=True)
                 self.polyencoderagent.observe({'episode_done': False,
