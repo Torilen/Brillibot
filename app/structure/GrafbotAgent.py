@@ -47,7 +47,7 @@ class GrafbotAgent:
 
     def initPolyEncoder(self, ip, personality):
         f = open('candidates{}.txt'.format(ip), "w")
-        f.write(' \n'.join(["your persona: " + personaField for personaField in personality]+["LOLOLOL"]))
+        f.write(' \n'.join(personality))
         f.close()
         args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
                 'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
