@@ -88,7 +88,7 @@ class GrafbotAgent:
                 f.close()
                 print("OBSERVE", flush=True)
                 self.polyencoderagent.observe({'episode_done': False,
-                               'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
+                               'text': ' \n'.join(self.persona_history)+'\n'+english_version_of_user_input})
                 print("ACT", flush=True)
                 res = self.polyencoderagent.act()
                 print("PRINT ACT", flush=True)

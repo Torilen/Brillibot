@@ -170,6 +170,8 @@ class SemKG:
             print(self.dfWiki, flush=True)
             self.dfWiki = pd.concat([self.dfWiki, df2]).reset_index(drop=True)
             print(self.dfWiki)
+            print("TAIL", flush=True)
+            print(self.dfWiki.tail(10), flush=True)
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
         if len(entities_word) > 0:
