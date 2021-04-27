@@ -82,7 +82,7 @@ class GrafbotAgent:
             for p in range(m):
                 os.remove('candidates{}.txt'.format(self.ip))
                 f = open('candidates{}.txt'.format(self.ip), "a")
-                self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in stories if not e in good_stories])
+                args, self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in stories if not e in good_stories])
                 print("CONTENT CANDIDATES", flush=True)
                 print([e for e in stories if not e in good_stories], flush=True)
                 f.close()
