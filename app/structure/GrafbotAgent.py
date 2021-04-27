@@ -47,7 +47,7 @@ class GrafbotAgent:
 
     def initPolyEncoder(self, ip, personality):
         f = open('candidates{}.txt'.format(ip), "w")
-        f.write(' \n'.join(["your persona: " + personaField for personaField in personality]))
+        f.write(' \n'.join(["your persona: " + personaField for personaField in personality]+["LOLOLOL"]))
         f.close()
         args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
                 'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
@@ -82,13 +82,12 @@ class GrafbotAgent:
             for p in range(m):
                 os.remove('candidates{}.txt'.format(self.ip))
                 f = open('candidates{}.txt'.format(self.ip), "a")
-                for story in [e for e in stories if not e in good_stories]:
-                    f.write(story+"\n")
+                self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in stories if not e in good_stories])
                 print("CONTENT CANDIDATES", flush=True)
                 print([e for e in stories if not e in good_stories], flush=True)
                 f.close()
                 print("OBSERVE", flush=True)
-                self.polyencoderagent.observe({'episode_done': True,
+                self.polyencoderagent.observe({'episode_done': False,
                                'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
                 print("ACT", flush=True)
                 res = self.polyencoderagent.act()
