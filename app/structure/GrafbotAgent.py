@@ -88,7 +88,7 @@ class GrafbotAgent:
                 print([e for e in stories if not e in good_stories], flush=True)
                 f.close()
                 print("OBSERVE", flush=True)
-                self.polyencoderagent.observe({'episode_done': False,
+                self.polyencoderagent.observe({'episode_done': True,
                                'text': ' \n'.join(["your persona: " + personaField for personaField in self.persona_history])+'\n'+english_version_of_user_input})
                 print("ACT", flush=True)
                 res = self.polyencoderagent.act()
@@ -102,6 +102,7 @@ class GrafbotAgent:
         print(self.history, flush=True)
         self.agent.observe({'episode_done': False, 'text': english_version_of_user_input})
         model_res = self.agent.act()
+        print(model_res, flush=True)
 
         json_return = dict()
 
