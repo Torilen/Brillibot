@@ -4,6 +4,7 @@ from transformers import BertModel
 from transformers import FlaubertModel
 from transformers import BertTokenizer
 from transformers import FlaubertTokenizer
+import os
 
 
 LANG = "EN"
@@ -47,4 +48,6 @@ for sentence in p:
   if (i % 10 == 0):
     dfWiki.reset_index(drop=True, inplace=True)
     dfWiki.to_json('{}-{}-dfWiki.json'.format(0, i))
+    if i > 10:
+      os.remove('{}-{}-dfWiki.json'.format(0, i - 10))
 
