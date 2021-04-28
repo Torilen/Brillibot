@@ -14,7 +14,7 @@ if len(args) > 1:
     if args[1] == "train":
         dfWiki = pd.read_json(args[2])
 
-        train, test = train_test_split(dfWiki.drop(['word'], axis=1), test_size=0.1)
+        train, test = train_test_split(dfWiki.drop(['word', 'sentence'], axis=1), test_size=0.1)
         train = train.to_numpy()
         test = test.to_numpy()
         encoding_dim = 32
@@ -24,11 +24,9 @@ if len(args) > 1:
         encoded = layers.Dense(500, activation='tanh')(input)
         encoded = layers.Dense(2000, activation='tanh')(encoded)
         encoded = layers.Dense(250, activation='tanh')(encoded)
-        encoded = layers.Dense(1000, activation='tanh')(encoded)
         encoded = layers.Dense(encoding_dim, activation='tanh')(encoded)
 
-        decoded = layers.Dense(1000, activation='tanh')(encoded)
-        decoded = layers.Dense(250, activation='tanh')(decoded)
+        decoded = layers.Dense(250, activation='tanh')(encoded)
         decoded = layers.Dense(2000, activation='tanh')(decoded)
         decoded = layers.Dense(500, activation='tanh')(decoded)
         decoded = layers.Dense(train.shape[1], activation='tanh')(decoded)
@@ -37,10 +35,10 @@ if len(args) > 1:
 
         encoder = keras.Model(input, encoded)
 
-        autoencoder.compile(optimizer='adadelta', loss='mse')
+        autoencoder.compile(optimizer='rmsprop', loss='mse')
 
         autoencoder.fit(train, train,
-                        epochs=200,
+                        epochs=100,
                         batch_size=256,
                         shuffle=True,
                         validation_data=(test, test))

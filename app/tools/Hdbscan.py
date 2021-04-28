@@ -8,7 +8,7 @@ from nltk.corpus import stopwords
 
 nltk.download('stopwords')
 
-model = hdbscan.HDBSCAN(min_cluster_size=2, prediction_data = True)
+model = hdbscan.HDBSCAN(min_cluster_size=5, prediction_data = True)
 
 args = sys.argv
 print(args)
