@@ -128,8 +128,14 @@ class SemKG:
         print(cluster_target, flush=True)
         print(cluster_target.values, flush=True)
         print(cluster_target.values.T, flush=True)
+        word = cluster_target['word']
+        clusterid = cluster_target['clusterid']
+        sentence = cluster_target['sentence']
         clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1)
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
+        clusterDf['word'] = word
+        clusterDf['clusterid'] = clusterid
+        clusterDf['sentence'] = sentence
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
         print("NEAREST NEIGHBOUR", flush=True)
         print(clusterDfsorted.head(top_n)[['word', 'sentence','distance', 'clusterid']], flush=True)
