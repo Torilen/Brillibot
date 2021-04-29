@@ -132,7 +132,7 @@ class SemKG:
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
         print("NEAREST NEIGHBOUR", flush=True)
-        print(clusterDfsorted.head(top_n)[['word', 'sentence','distance', 'clusterid']])
+        print(clusterDfsorted.head(top_n)[['word', 'sentence','distance', 'clusterid']], flush=True)
         return list(clusterDfsorted.head(top_n).index)
 
     def learn(self, personas):
