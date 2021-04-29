@@ -38,7 +38,7 @@ if len(args) > 1:
         autoencoder.compile(optimizer='rmsprop', loss='mse')
 
         autoencoder.fit(train, train,
-                        epochs=100,
+                        epochs=200,
                         batch_size=256,
                         shuffle=True,
                         validation_data=(test, test))
