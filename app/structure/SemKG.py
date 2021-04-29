@@ -14,6 +14,7 @@ import subprocess
 
 
 class SemKG:
+    pd.set_option('display.max_columns', 5)
     nltk.download('stopwords')
     graph = dict()
     graphNodeId = dict()
