@@ -72,21 +72,16 @@ class GrafbotAgent:
         #english_version_of_user_input = reply_text
         embedded = concatEmbeddingEn(getContextualEmbedding(english_version_of_user_input, verbose=False))
         entities = get_entities(english_version_of_user_input)
-        stories, similarities_score = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
+        stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")
         print(stories)
-        print(similarities_score)
         if len(stories) > 1:
             m = min(3, len(stories))
             good_stories = []
             print("CREATE CANDIDATES", flush=True)
             for p in range(m):
                 os.remove('candidates{}.txt'.format(self.ip))
-                f = open('candidates{}.txt'.format(self.ip), "a")
-                args, self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in stories if not e in good_stories])
-                print("CONTENT CANDIDATES", flush=True)
-                print([e for e in stories if not e in good_stories], flush=True)
-                f.close()
+                args, self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in list(stories.sentence.values) if not e in good_stories])
                 print("OBSERVE", flush=True)
                 self.polyencoderagent.observe({'episode_done': False,
                                'text': ' \n'.join(self.persona_history)+'\n'+english_version_of_user_input})
@@ -114,7 +109,7 @@ class GrafbotAgent:
 
         json_return['user_lang'] = user_language
         json_return['stories'] = good_stories
-        json_return['score'] = [similarities_score[stories.index(x)] for x in good_stories]
+        json_return['score'] = list(stories[stories.sentence.isin(good_stories)].distance.values)
         return jsonify(json_return)
 
     def get(self, val):
