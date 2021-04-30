@@ -213,7 +213,8 @@ class SemKG:
                     df2 = cluster.loc[result_index]
                     df2['distance'] = similarities_score
                     result = pd.concat([result, df2]).reset_index(drop=True).sort_values(by=['distance'], inplace=False, ascending=False)
+                    result.drop_duplicates(subset="sentence", keep='first', inplace=True)
 
-            return result.drop_duplicates(subset="sentence", keep='first', inplace=True)
+            return result
         else:
             return pd.DataFrame()
