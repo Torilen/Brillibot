@@ -139,9 +139,10 @@ class SemKG:
         clusterDf['clusterid'] = clusterid
         clusterDf['sentence'] = sentence
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
+        result = clusterDfsorted.head(top_n)
         print("NEAREST NEIGHBOUR", flush=True)
-        print(clusterDfsorted.head(top_n)[['word', 'sentence','distance', 'clusterid']], flush=True)
-        return list(clusterDfsorted.head(top_n).index)
+        print(result[['word', 'sentence','distance', 'clusterid']], flush=True)
+        return [list(result.index), list(result.distance)]
 
     def learn(self, personas):
         for persona in personas:
@@ -207,9 +208,9 @@ class SemKG:
                     print("GET STORIES", flush=True)
                     print(v, flush=True)
                     cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-                    result = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
+                    result, similarities_score = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
                     stories += list(cluster.loc[result].sentence.values)
 
-            return list(set(stories))
+            return list(stories), similarities_score
         else:
-            return list()
+            return list(), list()

@@ -72,9 +72,10 @@ class GrafbotAgent:
         #english_version_of_user_input = reply_text
         embedded = concatEmbeddingEn(getContextualEmbedding(english_version_of_user_input, verbose=False))
         entities = get_entities(english_version_of_user_input)
-        stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
+        stories, similarities_score = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")
         print(stories)
+        print(similarities_score)
         if len(stories) > 1:
             m = min(3, len(stories))
             good_stories = []
@@ -112,7 +113,8 @@ class GrafbotAgent:
             json_return['text'] = process_output_chatbot(model_res['text'])
 
         json_return['user_lang'] = user_language
-        json_return['stories'] = stories
+        json_return['stories'] = good_stories
+        json_return['score'] = [similarities_score[stories.index(x)] for x in good_stories]
         return jsonify(json_return)
 
     def get(self, val):
