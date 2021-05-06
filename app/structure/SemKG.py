@@ -133,18 +133,22 @@ class SemKG:
         word = cluster_target['word']
         clusterid = cluster_target['clusterid']
         sentence = cluster_target['sentence']
-        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence'], axis=1)
+        keywordsId = cluster_target['keywordsId']
+        answers = cluster_target['answer']
+        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence', 'keywordsId', 'answer'], axis=1)
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
         clusterDf['word'] = word
         clusterDf['clusterid'] = clusterid
         clusterDf['sentence'] = sentence
+        clusterDf['keywordsId'] = keywordsId
+        clusterDf['answer'] = answers
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
         result = clusterDfsorted.head(top_n)
         print("NEAREST NEIGHBOUR", flush=True)
-        print(result[['word', 'sentence','distance', 'clusterid']], flush=True)
+        print(result[['word', 'sentence','distance', 'clusterid', 'keywordsId', 'answer']], flush=True)
         return [list(result.index), list(result.distance)]
 
-    def learn(self, personas):
+    def learn(self, personas, keywordsId, answers):
         for persona in personas:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=True))
             df2 = pd.DataFrame(embed[0])
@@ -175,6 +179,8 @@ class SemKG:
             #self.hdbscan_model.fit(data)
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
+            df2['keywordsId'] = keywordsId
+            df2['answer'] = answers
             print(df2.head(), flush=True)
             print(df2.columns, flush=True)
             print(self.dfWiki.columns, flush=True)
@@ -189,7 +195,7 @@ class SemKG:
             dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
             data_formatted = []
             for col in dfVector.columns:
-                if col != "word" and col != "sentence":
+                if col != "word" and col != "sentence" and col != "keywordsId" and col != "answer":
                     data_formatted.append(dfVector[col].tolist())
             data = np.array(data_formatted[0:32]).T
             print("TO SPEAK", flush=True)
@@ -203,6 +209,8 @@ class SemKG:
                 labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
                 dfVector['word'] = entities_word
                 dfVector['clusterid'] = labels
+                dfVector['keywordsId'] = [list() for i in range(len(entities_word))]
+                dfVector['answer'] = ['' for i in range(len(entities_word))]
                 result = pd.DataFrame()
                 for index, row in dfVector.iterrows():
                     v = row.values.T

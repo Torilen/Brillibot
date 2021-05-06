@@ -49,10 +49,19 @@ class Interact(Resource):
 @api.route('/createAgent')
 class CreateAgent(Resource):
     def post(self):
-        persona = json.loads(request.form['data'])
-        print(persona)
+        personaData = json.loads(request.form['data'])
+        print(personaData)
+        persona = list()
+        keywordsId = list()
+        answers = list()
+        for e in personaData:
+            eSplit = e.split(";")
+            persona.append(eSplit[0])
+            keywordsId.append(eSplit[1])
+            answers.append(eSplit[2])
+
         shared_temp = SHARED.copy()
-        SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr)
+        SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr, keywordsId=keywordsId, answers=answers)
         if (request.remote_addr not in list(shared_temp.keys())):
             res = dict()
             res['creation'] = 1

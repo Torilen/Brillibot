@@ -23,12 +23,12 @@ class GrafbotAgent:
     history = []
     persona_history = []
 
-    def __init__(self, personality, ip):
+    def __init__(self, personality, keywordsId, answers, ip):
         self.opt = self.parser.parse_args(print_args=False)
         self.opt['task'] = 'parlai.agents.local_human.local_human:LocalHumanAgent'
         self.agent = create_agent(self.opt, requireModelExists=True)
         self.addStoriesLive(personality)
-        self.learn(personality)
+        self.learn(personality, keywordsId, answers)
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
@@ -42,8 +42,8 @@ class GrafbotAgent:
         if(len(personality) > 0):
             self.agent.observe({'episode_done': False, 'text': personalityText})
 
-    def learn(self, sentences):
-        self.semkg.learn(sentences)
+    def learn(self, sentences, keywordsId, answers):
+        self.semkg.learn(sentences, keywordsId, answers)
 
     def initPolyEncoder(self, ip, personality):
         f = open('candidates{}.txt'.format(ip), "w")
@@ -75,42 +75,80 @@ class GrafbotAgent:
         stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
         print("STORIES: ")
         print(stories)
-        if len(stories) > 1:
-            m = min(3, len(stories))
-            good_stories = []
-            print("CREATE CANDIDATES", flush=True)
-            for p in range(m):
-                os.remove('candidates{}.txt'.format(self.ip))
-                args, self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in list(stories.sentence.values) if not e in good_stories])
-                print("OBSERVE", flush=True)
-                self.polyencoderagent.observe({'episode_done': False,
-                               'text': ' \n'.join(self.persona_history)+'\n'+english_version_of_user_input})
-                print("ACT", flush=True)
-                res = self.polyencoderagent.act()
-                print("PRINT ACT", flush=True)
-                print(res, flush=True)
-                good_stories.append(res['text'])
-            self.addStoriesLive(good_stories)
+        if len(stories) > 0:
+            if not stories.iloc[0].answer.values == '':
+                self.history.append(english_version_of_user_input)
+                json_return = dict()
+
+                if (user_language != "en"):
+                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer.values)
+                    json_return['text'] = translate_base(stories.iloc[0].answer.values, dest=user_language)
+                else:
+                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer.values)
+
+                json_return['user_lang'] = user_language
+                json_return['stories'] = stories.iloc[0].sentence.values
+                json_return['score'] = list(stories.iloc[0].distance.values)
+                json_return['keywordsId'] = list(stories.iloc[0].keywordsId.values)
+                return jsonify(json_return)
+            else:
+                if len(stories) > 1:
+                    m = min(3, len(stories))
+                    good_stories = []
+                    print("CREATE CANDIDATES", flush=True)
+                    for p in range(m):
+                        os.remove('candidates{}.txt'.format(self.ip))
+                        args, self.polyencoderagent = self.initPolyEncoder(self.ip, [e for e in list(stories.sentence.values) if not e in good_stories])
+                        print("OBSERVE", flush=True)
+                        self.polyencoderagent.observe({'episode_done': False,
+                                       'text': ' \n'.join(self.persona_history)+'\n'+english_version_of_user_input})
+                        print("ACT", flush=True)
+                        res = self.polyencoderagent.act()
+                        print("PRINT ACT", flush=True)
+                        print(res, flush=True)
+                        good_stories.append(res['text'])
+                    self.addStoriesLive(good_stories)
+                else:
+                    print("I don't remember anything", flush=True)
+                self.history.append(english_version_of_user_input)
+                print(self.history, flush=True)
+                self.agent.observe({'episode_done': False, 'text': english_version_of_user_input})
+                model_res = self.agent.act()
+                print(model_res, flush=True)
+
+                json_return = dict()
+
+                if (user_language != "en"):
+                    json_return['text'] = process_output_chatbot(model_res['text'])
+                    json_return['text'] = translate_base(json_return['text'], dest=user_language)
+                else:
+                    json_return['text'] = process_output_chatbot(model_res['text'])
+
+                json_return['user_lang'] = user_language
+                json_return['stories'] = good_stories
+                json_return['score'] = list(stories[stories.sentence.isin(good_stories)].distance.values)
+                json_return['keywordsId'] = list()
+                return jsonify(json_return)
         else:
-            print("I don't remember anything", flush=True)
-        self.history.append(english_version_of_user_input)
-        print(self.history, flush=True)
-        self.agent.observe({'episode_done': False, 'text': english_version_of_user_input})
-        model_res = self.agent.act()
-        print(model_res, flush=True)
+            self.history.append(english_version_of_user_input)
+            print(self.history, flush=True)
+            self.agent.observe({'episode_done': False, 'text': english_version_of_user_input})
+            model_res = self.agent.act()
+            print(model_res, flush=True)
 
-        json_return = dict()
+            json_return = dict()
 
-        if (user_language != "en"):
-            json_return['text'] = process_output_chatbot(model_res['text'])
-            json_return['text'] = translate_base(json_return['text'], dest=user_language)
-        else:
-            json_return['text'] = process_output_chatbot(model_res['text'])
+            if (user_language != "en"):
+                json_return['text'] = process_output_chatbot(model_res['text'])
+                json_return['text'] = translate_base(json_return['text'], dest=user_language)
+            else:
+                json_return['text'] = process_output_chatbot(model_res['text'])
 
-        json_return['user_lang'] = user_language
-        json_return['stories'] = good_stories
-        json_return['score'] = list(stories[stories.sentence.isin(good_stories)].distance.values)
-        return jsonify(json_return)
+            json_return['user_lang'] = user_language
+            json_return['stories'] = list()
+            json_return['score'] = list()
+            json_return['keywordsId'] = list()
+            return jsonify(json_return)
 
     def get(self, val):
         if val == 'opt':
