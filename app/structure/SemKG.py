@@ -149,6 +149,7 @@ class SemKG:
         return [list(result.index), list(result.distance)]
 
     def learn(self, personas, keywordsId, answers):
+        i = 0
         for persona in personas:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=True))
             df2 = pd.DataFrame(embed[0])
@@ -179,8 +180,8 @@ class SemKG:
             #self.hdbscan_model.fit(data)
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
-            df2['keywordsId'] = keywordsId
-            df2['answer'] = answers
+            df2['keywordsId'] = keywordsId[i]
+            df2['answer'] = answers[i]
             print(df2.head(), flush=True)
             print(df2.columns, flush=True)
             print(self.dfWiki.columns, flush=True)
@@ -189,6 +190,7 @@ class SemKG:
             print(self.dfWiki)
             print("TAIL", flush=True)
             print(self.dfWiki.tail(10), flush=True)
+            i += 1
 
     def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
         if len(entities_word) > 0:
