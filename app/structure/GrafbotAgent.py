@@ -88,8 +88,8 @@ class GrafbotAgent:
 
                 json_return['user_lang'] = user_language
                 json_return['stories'] = stories.iloc[0].sentence
-                json_return['score'] = list(stories.iloc[0].distance.values)
-                json_return['keywordsId'] = list(stories.iloc[0].keywordsId)
+                json_return['score'] = [stories.iloc[0].distance]
+                json_return['keywordsId'] = [stories.iloc[0].keywordsId]
                 return jsonify(json_return)
             else:
                 if len(stories) > 1:
