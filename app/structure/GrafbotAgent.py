@@ -76,20 +76,20 @@ class GrafbotAgent:
         print("STORIES: ")
         print(stories)
         if len(stories) > 0:
-            if not stories.iloc[0].answer.values == '':
+            if not stories.iloc[0].answer == '':
                 self.history.append(english_version_of_user_input)
                 json_return = dict()
 
                 if (user_language != "en"):
-                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer.values)
-                    json_return['text'] = translate_base(stories.iloc[0].answer.values, dest=user_language)
+                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer)
+                    json_return['text'] = translate_base(stories.iloc[0].answer, dest=user_language)
                 else:
-                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer.values)
+                    json_return['text'] = process_output_chatbot(stories.iloc[0].answer)
 
                 json_return['user_lang'] = user_language
-                json_return['stories'] = stories.iloc[0].sentence.values
-                json_return['score'] = list(stories.iloc[0].distance.values)
-                json_return['keywordsId'] = list(stories.iloc[0].keywordsId.values)
+                json_return['stories'] = stories.iloc[0].sentence
+                json_return['score'] = list(stories.iloc[0].distance)
+                json_return['keywordsId'] = list(stories.iloc[0].keywordsId)
                 return jsonify(json_return)
             else:
                 if len(stories) > 1:
