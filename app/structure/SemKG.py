@@ -180,8 +180,8 @@ class SemKG:
             #self.hdbscan_model.fit(data)
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
-            df2['keywordsId'] = keywordsId[i]
-            df2['answer'] = answers[i]
+            df2['keywordsId'] = [keywordsId[i] for l in range(len(df2))]
+            df2['answer'] = [answers[i] for l in range(len(df2))]
             print(df2.head(), flush=True)
             print(df2.columns, flush=True)
             print(self.dfWiki.columns, flush=True)
