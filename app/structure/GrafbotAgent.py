@@ -87,7 +87,7 @@ class GrafbotAgent:
                     json_return['text'] = process_output_chatbot(stories.iloc[0].answer)
 
                 json_return['user_lang'] = user_language
-                json_return['stories'] = stories.iloc[0].sentence
+                json_return['stories'] = [stories.iloc[0].sentence]
                 json_return['score'] = [stories.iloc[0].distance]
                 json_return['keywordsId'] = [stories.iloc[0].keywordsId]
                 return jsonify(json_return)
