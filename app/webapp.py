@@ -59,7 +59,7 @@ class CreateAgent(Resource):
             persona.append(eSplit[0])
             keywordsId.append(eSplit[1])
             answers.append(eSplit[2])
-
+        print(persona, keywordsId, answers)
         shared_temp = SHARED.copy()
         SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr, keywordsId=keywordsId, answers=answers)
         if (request.remote_addr not in list(shared_temp.keys())):
