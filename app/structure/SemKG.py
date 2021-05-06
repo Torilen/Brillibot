@@ -219,7 +219,7 @@ class SemKG:
                     print("GET STORIES", flush=True)
                     print(v, flush=True)
                     cluster = self.dfWiki[self.dfWiki.clusterid == row.clusterid]
-                    result_index, similarities_score = self.get_nearest_member_of_cluster(v[:-2], cluster, top_n)
+                    result_index, similarities_score = self.get_nearest_member_of_cluster(v[:-4], cluster, top_n)
                     df2 = cluster.loc[result_index]
                     df2['distance'] = similarities_score
                     result = pd.concat([result, df2]).reset_index(drop=True).sort_values(by=['distance'], inplace=False, ascending=False)
