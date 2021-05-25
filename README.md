@@ -41,44 +41,12 @@ Ici le projet repose sur les concepts de mémoire sémantique (la mémoire des f
 > sudo apt install default-jre
 >
 > git clone https://github.com/Torilen/Grafbot.git
->
-> git clone https://github.com/facebookresearch/ParlAI.git
->
-> sudo apt install curl (yes)
->
-> curl -O https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
->
-> bash Anaconda3-2019.03-Linux-x86_64.sh (Enter, Read, yes, Enter)
->
-> sudo reboot
->
-> conda create --name grafbot
->
-> conda install pip
->
-> pip install -r requirements.txt
->
-> cd ParlAI
->
-> python setup.py develop
->
-> pip install transformers==2.5.1
->
-> pip install 'git+https://github.com/rsennrich/subword-nmt.git#egg=subword-nmt'
->
-> pip install werkzeug==0.16.1
 > 
 > wget -O ./app/lib/stanford-postagger-full-2018-10-16.zip https://nlp.stanford.edu/software/stanford-postagger-full-2018-10-16.zip && unzip ./app/lib/stanford-postagger-full-2018-10-16.zip
->
-> pip install pyOpenSSL
->
-> pip install pyOpenSSL
->
-> pip install BeautifulSoup4
->
-> python
-> import nltk
-> nltk.download('punkt')
+> 
+> cd Grafbot
+> 
+> docker build -t grafbot .
 
 
 ## Configuration HTTPS
@@ -117,7 +85,7 @@ Ici le projet repose sur les concepts de mémoire sémantique (la mémoire des f
 ## Lancement
 
 >
-> python app/webapp.py -t blended_skill_talk -mf zoo:blender/blender_90M/model
+> docker run --gpus all -d -p 5000:5000 grafbot
 >
 ## Datasets
 * [Cornell](https://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html) : Anglais, +220k conversations _(Génération de langage)_
