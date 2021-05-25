@@ -22,7 +22,7 @@ RUN python3.7 -m pip install --no-cache-dir --upgrade pip && \
     python3.7 -m pip install --no-cache-dir keras==2.4.3 && \
     python3.7 -m pip install --no-cache-dir torch==1.5.0 && \
     python3.7 -m pip install --no-cache-dir 'git+https://github.com/rsennrich/subword-nmt.git#egg=subword-nmt' && \
-    python3.7 -m pip install --no-cache-dir werkzeug==0.16.1 && \
+    python3.7 -m pip install --no-cache-dir werkzeug==2.0.1 && \
     python3.7 -m pip install --no-cache-dir pyOpenSSL && \
     python3.7 -m pip install --no-cache-dir BeautifulSoup4 && \
     python3.7 -m pip install --no-cache-dir joblib && \
