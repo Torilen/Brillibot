@@ -23,12 +23,12 @@ class GrafbotAgent:
     history = []
     persona_history = []
 
-    def __init__(self, personality, keywordsId, answers, ip):
+    def __init__(self, personality, keywordsId, answers, ip, keywordsCond):
         self.opt = self.parser.parse_args(print_args=False)
         self.opt['task'] = 'parlai.agents.local_human.local_human:LocalHumanAgent'
         self.agent = create_agent(self.opt, requireModelExists=True)
         self.addStoriesLive(personality)
-        self.learn(personality, keywordsId, answers)
+        self.learn(personality, keywordsId, answers, keywordsCond)
         #self.addStoriesLive(personality)
         self.world = create_task(self.opt, self.agent)
         self.ip = ip
@@ -42,8 +42,8 @@ class GrafbotAgent:
         if(len(personality) > 0):
             self.agent.observe({'episode_done': False, 'text': personalityText})
 
-    def learn(self, sentences, keywordsId, answers):
-        self.semkg.learn(sentences, keywordsId, answers)
+    def learn(self, sentences, keywordsId, answers, keywordsCond):
+        self.semkg.learn(sentences, keywordsId, answers, keywordsCond)
 
     def initPolyEncoder(self, ip, personality):
         f = open('candidates{}.txt'.format(ip), "w")
@@ -64,7 +64,7 @@ class GrafbotAgent:
 
         return args, create_agent(args)
 
-    def speak(self, reply_text):
+    def speak(self, reply_text, keywordsUnlocked):
         print("Reply : "+reply_text)
         user_language = detect(reply_text)
         #user_language = "en"
@@ -72,7 +72,7 @@ class GrafbotAgent:
         #english_version_of_user_input = reply_text
         embedded = concatEmbeddingEn(getContextualEmbedding(english_version_of_user_input, verbose=False))
         entities = get_entities(english_version_of_user_input)
-        stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities])
+        stories = self.semkg.get_stories(self.epikg, [x[0] for x in entities], [embedded[0][x[1]] for x in entities], keywordsUnlocked)
         print("STORIES: ")
         print(stories)
         if len(stories) > 0:

@@ -148,7 +148,7 @@ class SemKG:
         print(result[['word', 'sentence','distance', 'clusterid', 'keywordsId', 'answer']], flush=True)
         return [list(result.index), list(result.distance)]
 
-    def learn(self, personas, keywordsId, answers):
+    def learn(self, personas, keywordsId, answers, keywordsCond):
         i = 0
         for persona in personas:
             embed = concatEmbeddingEn(getContextualEmbedding(persona, verbose=True))
@@ -180,7 +180,8 @@ class SemKG:
             #self.hdbscan_model.fit(data)
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
-            df2['keywordsId'] = [keywordsId[i] for l in range(len(df2))]
+            df2['keywordsId'] = [keywordsId[i].split('|') for l in range(len(df2))]
+            df2['keywordsCond'] = [keywordsCond[i].split('|') for l in range(len(df2))]
             df2['answer'] = [answers[i] for l in range(len(df2))]
             print(df2.head(), flush=True)
             print(df2.columns, flush=True)
@@ -192,7 +193,7 @@ class SemKG:
             print(self.dfWiki.tail(10), flush=True)
             i += 1
 
-    def get_stories(self, epikg, entities_word, entities_vector, top_n=5, steps=5):
+    def get_stories(self, epikg, entities_word, entities_vector, keywordsUnlocked, top_n=5, steps=5):
         if len(entities_word) > 0:
             dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
             data_formatted = []
@@ -212,6 +213,7 @@ class SemKG:
                 dfVector['word'] = entities_word
                 dfVector['clusterid'] = labels
                 dfVector['keywordsId'] = [list() for i in range(len(entities_word))]
+                dfVector['keywordsCond'] = [list() for i in range(len(entities_word))]
                 dfVector['answer'] = ['' for i in range(len(entities_word))]
                 result = pd.DataFrame()
                 for index, row in dfVector.iterrows():
@@ -224,7 +226,8 @@ class SemKG:
                     df2['distance'] = similarities_score
                     result = pd.concat([result, df2]).reset_index(drop=True).sort_values(by=['distance'], inplace=False, ascending=False)
                     result.drop_duplicates(subset="sentence", keep='first', inplace=True)
-
-            return result
+                    result['keep'] = [True if all(item in unlock for item in elemB) or elemA == '' else False for elemB, elemA in
+                     zip(list(result['keywordsCond'].values), list(result['answer'].values))]
+            return result[result['keep'] == True].drop(['keep'], axis=1).reset_index(drop=True)
         else:
             return pd.DataFrame()
