@@ -14,7 +14,7 @@ RUN python3.7 -m pip install --no-cache-dir --upgrade pip && \
     python3.7 -m pip install --no-cache-dir tokenizers==0.10.1 && \
     python3.7 -m pip install --no-cache-dir tensorflow==2.4.1 && \
     python3.7 -m pip install --no-cache-dir Flask && \
-    python3.7 -m pip install --no-cache-dir flask-restplus && \
+    python3.7 -m pip install --no-cache-dir flask-restx && \
     python3.7 -m pip install --no-cache-dir flask-cors && \
     python3.7 -m pip install --no-cache-dir transformers && \
     python3.7 -m pip install --no-cache-dir pandas==1.1.5 && \
