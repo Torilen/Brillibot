@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir tokenizers==0.10.1 && \
     pip install --no-cache-dir transformers && \
     pip install --no-cache-dir 'git+https://github.com/rsennrich/subword-nmt.git#egg=subword-nmt' && \
-    pip install --no-cache-dir werkzeug==0.16.1 && \
+    pip install --no-cache-dir werkzeug==2.0.0 && \
     pip install --no-cache-dir pyOpenSSL && \
     pip install --no-cache-dir BeautifulSoup4 
 RUN ls
