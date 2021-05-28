@@ -6,15 +6,18 @@ from threading import Thread
 from OpenSSL import SSL
 from werkzeug.middleware.proxy_fix import ProxyFix
 import os
+import sys
 
 from tools.Utils import process_output_chatbot
 from structure.GrafbotAgent import GrafbotAgent
+from structure.GPT3Agent import GPT3Agent
 import json
 
 context = SSL.Context(SSL.SSLv23_METHOD)
 cer = 'grafbot.com.crt'
 key = 'grafbot.com.key'
-
+api_key_openai = ''
+model_to_use = 'grafbot'
 env = "ubuntu"
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -24,7 +27,7 @@ CORS(app)
 confReset = api.model('reset', {})
 confInteract = api.model('interact', {
         'data': fields.String(description="Message de l'utilisateur pour l'agent", required=True, example='Hi, how are you ?'),
-        'keywordsUnlocked': fields.List(description="Liste des identifiants de mots-clés déjà débloqué par l'utilisateur. Peut être une liste vide []", required=True, example=[0,1,5,4,8]),
+        'keywordsUnlocked': fields.List(fields.Integer, description="Liste des identifiants de mots-clés déjà débloqué par l'utilisateur. Peut être une liste vide []", required=True, example=[0,1,5,4,8]),
     })
 confCreateAgent = api.model('createAgent', {
         'data': fields.String(description="Données de chargement d'un agent donné au format suivant : ligne de personnalité;ids de mots-clés débloqués avec cette query séparés par des |; réponse scriptée à retourner si les mots-clés sont détectés; ids de mots-clés conditionnant la détection d'autres mots-clés séparés par des |\\n etc", required=True, example='["My name is Aniss;;;","I have 23 years old;;;","My job is Data Scientist;;;","My cay has already eaten a dog;0|1|5;Réponse associée à my cat has already eaten a dog;2|3","Souvenir 2;;;"]'),
@@ -78,7 +81,12 @@ class CreateAgent(Resource):
             keywordsCond.append(eSplit[3])
         print(persona, keywordsId, answers)
         shared_temp = SHARED.copy()
-        SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr, keywordsId=keywordsId, answers=answers, keywordsCond=keywordsCond)
+        if os.getenv("model_to_use") == 'grafbot':
+            SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr, keywordsId=keywordsId, answers=answers, keywordsCond=keywordsCond)
+        elif os.getenv("model_to_use") == 'gpt3':
+            SHARED[request.remote_addr] = GPT3Agent(personality=persona, ip=request.remote_addr,
+                                                       keywordsId=keywordsId, answers=answers,
+                                                       keywordsCond=keywordsCond, api_key=os.getenv("openai_api_key"))
         if (request.remote_addr not in list(shared_temp.keys())):
             res = dict()
             res['creation'] = 1
@@ -105,5 +113,6 @@ class Reset(Resource):
 
 if __name__ == '__main__':
     context = (cer, key)
+    print(sys.argv)
     app.run(host="0.0.0.0", port=int("5000"), use_reloader=False, debug=True, threaded=True)
 

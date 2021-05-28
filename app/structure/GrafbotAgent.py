@@ -16,12 +16,7 @@ class GrafbotAgent:
     opt = None
     agent = None
     world = None
-    semkg = SemKG()
-    epikg = EpiKG()
-    polyencoder = None
-    ip = ""
-    history = []
-    persona_history = []
+
 
     def __init__(self, personality, keywordsId, answers, ip, keywordsCond):
         self.opt = self.parser.parse_args(print_args=False)
