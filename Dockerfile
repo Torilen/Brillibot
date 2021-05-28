@@ -31,7 +31,8 @@ RUN python3.7 -m pip install --no-cache-dir --upgrade pip && \
     python3.7 -m pip install --no-cache-dir google-cloud && \
     python3.7 -m pip install --no-cache-dir google-cloud-translate && \
     python3.7 -m pip install --no-cache-dir scipy==1.4.1 && \
-    python3.7 -m pip install --no-cache-dir hdbscan
+    python3.7 -m pip install --no-cache-dir hdbscan && \
+    python3.7 -m pip install --no-cache-dir openai
 RUN ls
 COPY . ../app
 WORKDIR ../
