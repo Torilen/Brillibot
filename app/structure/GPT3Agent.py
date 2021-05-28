@@ -8,7 +8,7 @@ from tools.EntityExtractor import get_entities, get_entities_index
 from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEmbedding
 from tools.Converter import Entities2Tuples
 from structure.SemKG import SemKG
-from structure.EpiKG import
+from structure.EpiKG import EpiKG
 from parlai.core.agents import create_agent
 
 class GPT3Agent:
