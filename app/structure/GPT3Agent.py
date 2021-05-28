@@ -8,7 +8,8 @@ from tools.EntityExtractor import get_entities, get_entities_index
 from tools.Embedder import concatEmbeddingFr, concatEmbeddingEn, getContextualEmbedding
 from tools.Converter import Entities2Tuples
 from structure.SemKG import SemKG
-from structure.EpiKG import EpiKG
+from structure.EpiKG import
+from parlai.core.agents import create_agent
 
 class GPT3Agent:
     api_key = ''
@@ -33,6 +34,25 @@ class GPT3Agent:
 
     def learn(self, sentences, keywordsId, answers, keywordsCond):
         self.semkg.learn(sentences, keywordsId, answers, keywordsCond)
+
+    def initPolyEncoder(self, ip, personality):
+        f = open('candidates{}.txt'.format(ip), "w")
+        f.write(' \n'.join(personality))
+        f.close()
+        args = {'optimizer': 'adamax', 'learningrate': 5e-05, 'batchsize': 256, 'embedding_size': 768,
+                'num_epochs': 8.0, 'model': 'transformer/polyencoder', 'n_layers': 12, 'n_heads': 12, 'ffn_size': 3072,
+                'gradient_clip': 0.1}
+        args['eval_candidates'] = 'fixed'
+        args['encode_candidate_vecs'] = 'true'
+        args['fixed_candidates_path'] = 'candidates.txt'
+        args['model_file'] = 'zoo:pretrained_transformers/model_poly/model'
+        args['candidates'] = 'batch'
+        args['override'] = {'model': 'transformer/polyencoder',
+                            'model_file': '/data1/home/mrim/bentebia/anaconda3/envs/grafbot/lib/python3.7/site-packages/data/models/pretrained_transformers/model_poly/model',
+                            'encode_candidate_vecs': True, 'eval_candidates': 'fixed',
+                            'fixed_candidates_path': 'candidates{}.txt'.format(ip)}
+
+        return args, create_agent(args)
 
     def speak(self, reply_text, keywordsUnlocked):
         user_language = detect(reply_text)
