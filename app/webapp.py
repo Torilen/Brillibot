@@ -30,7 +30,7 @@ confInteract = api.model('interact', {
         'keywordsUnlocked': fields.List(fields.Integer, description="Liste des identifiants de mots-clés déjà débloqué par l'utilisateur. Peut être une liste vide []", required=True, example=[0,1,5,4,8]),
     })
 confCreateAgent = api.model('createAgent', {
-        'data': fields.String(description="Données de chargement d'un agent donné au format suivant : ligne de personnalité;ids de mots-clés débloqués avec cette query séparés par des |; réponse scriptée à retourner si les mots-clés sont détectés; ids de mots-clés conditionnant la détection d'autres mots-clés séparés par des |\\n etc", required=True, example='["My name is Aniss;;;","I have 23 years old;;;","My job is Data Scientist;;;","My cay has already eaten a dog;0|1|5;Réponse associée à my cat has already eaten a dog;2|3","Souvenir 2;;;"]'),
+        'data': fields.List(fields.String, description="Données de chargement d'un agent donné au format suivant : ligne de personnalité;ids de mots-clés débloqués avec cette query séparés par des |; réponse scriptée à retourner si les mots-clés sont détectés; ids de mots-clés conditionnant la détection d'autres mots-clés séparés par des |\\n etc", required=True, example=["My name is Aniss;;;","I have 23 years old;;;","My job is Data Scientist;;;","My cay has already eaten a dog;0|1|5;Réponse associée à my cat has already eaten a dog;2|3","Souvenir 2;;;"]),
     })
 
 
