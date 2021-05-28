@@ -156,3 +156,12 @@ class GPT3Agent:
             json_return['score'] = list()
             json_return['keywordsId'] = list()
             return jsonify(json_return)
+
+    def reset(self):
+        self.history = []
+
+    def get(self, val):
+        if val == 'agent':
+            return self
+        else:
+            return None
