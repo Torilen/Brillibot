@@ -131,13 +131,22 @@ class SemKG:
         print(cluster_target.values, flush=True)
         print(cluster_target.values.T, flush=True)
         word = cluster_target['word']
+        print('1', flush=True)
         clusterid = cluster_target['clusterid']
+        print('1', flush=True)
         sentence = cluster_target['sentence']
+        print('1', flush=True)
         keywordsId = cluster_target['keywordsId']
+        print('1', flush=True)
         keywordsCond = cluster_target['keywordsCond']
+        print('1', flush=True)
         answers = cluster_target['answer']
+        print('1', flush=True)
         clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence', 'keywordsId', 'keywordsCond', 'answer'], axis=1)
+        print('1', flush=True)
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
+        print('1', flush=True)
+        print(word, clusterid, keywordsId, keywordsCond, answers, clusterDf)
         clusterDf['word'] = word
         clusterDf['clusterid'] = clusterid
         clusterDf['sentence'] = sentence
