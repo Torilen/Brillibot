@@ -116,6 +116,8 @@ class GPT3Agent:
                     stop=["\n", " Human:", " AI:"]
                 )
 
+                print(response)
+
                 json_return = dict()
 
                 if (user_language != "en"):
