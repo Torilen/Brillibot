@@ -134,18 +134,20 @@ class SemKG:
         clusterid = cluster_target['clusterid']
         sentence = cluster_target['sentence']
         keywordsId = cluster_target['keywordsId']
+        keywordsCond = cluster_target['keywordsCond']
         answers = cluster_target['answer']
-        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence', 'keywordsId', 'answer'], axis=1)
+        clusterDf = cluster_target.drop(['word', 'clusterid', 'sentence', 'keywordsId', 'keywordsCond', 'answer'], axis=1)
         clusterDf['distance'] = clusterDf.apply(lambda x: 1 - spatial.distance.cosine(list(x), list(source)), axis=1)
         clusterDf['word'] = word
         clusterDf['clusterid'] = clusterid
         clusterDf['sentence'] = sentence
         clusterDf['keywordsId'] = keywordsId
+        clusterDf['keywordsCond'] = keywordsCond
         clusterDf['answer'] = answers
         clusterDfsorted = clusterDf.sort_values(by=['distance'], inplace=False, ascending=False)
         result = clusterDfsorted.head(top_n)
         print("NEAREST NEIGHBOUR", flush=True)
-        print(result[['word', 'sentence','distance', 'clusterid', 'keywordsId', 'answer']], flush=True)
+        print(result[['word', 'sentence','distance', 'clusterid', 'keywordsId', 'keywordsCond', 'answer']], flush=True)
         return [list(result.index), list(result.distance)]
 
     def learn(self, personas, keywordsId, answers, keywordsCond):
@@ -198,7 +200,7 @@ class SemKG:
             dfVector = tools.Compressor.compressVectorDfdim1Todim2(pd.DataFrame(entities_vector), self.compressor)
             data_formatted = []
             for col in dfVector.columns:
-                if col != "word" and col != "sentence" and col != "keywordsId" and col != "answer":
+                if col != "word" and col != "sentence" and col != "keywordsId" and col != "keywordsCond" and col != "answer":
                     data_formatted.append(dfVector[col].tolist())
             data = np.array(data_formatted[0:32]).T
             print("TO SPEAK", flush=True)
@@ -226,7 +228,7 @@ class SemKG:
                     df2['distance'] = similarities_score
                     result = pd.concat([result, df2]).reset_index(drop=True).sort_values(by=['distance'], inplace=False, ascending=False)
                     result.drop_duplicates(subset="sentence", keep='first', inplace=True)
-                    result['keep'] = [True if all(item in unlock for item in elemB) or elemA == '' else False for elemB, elemA in
+                    result['keep'] = [True if all(item in keywordsUnlocked for item in elemB) or elemA == '' else False for elemB, elemA in
                      zip(list(result['keywordsCond'].values), list(result['answer'].values))]
             return result[result['keep'] == True].drop(['keep'], axis=1).reset_index(drop=True)
         else:
