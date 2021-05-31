@@ -116,7 +116,7 @@ class GPT3Agent:
                     stop=["\n", " Human:", " AI:"]
                 )
 
-                print(response)
+                response = response["choices"][0]["text"][1:]
 
                 json_return = dict()
 
@@ -144,6 +144,8 @@ class GPT3Agent:
                 presence_penalty=0.6,
                 stop=["\n", " Human:", " AI:"]
             )
+
+            response = response["choices"][0]["text"][1:]
 
             json_return = dict()
 
