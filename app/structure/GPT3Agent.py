@@ -69,7 +69,7 @@ class GPT3Agent:
             if not stories.iloc[0].answer == '':
                 self.history.append("\nHuman: "+english_version_of_user_input)
                 json_return = dict()
-
+                self.history.append("\nAI: " + stories.iloc[0].answer)
                 if (user_language != "en"):
                     json_return['text'] = process_output_chatbot(stories.iloc[0].answer)
                     json_return['text'] = translate_base(stories.iloc[0].answer, dest=user_language)
@@ -80,6 +80,8 @@ class GPT3Agent:
                 json_return['stories'] = [stories.iloc[0].sentence]
                 json_return['score'] = [stories.iloc[0].distance]
                 json_return['keywordsId'] = [stories.iloc[0].keywordsId]
+                print("HISTORY", flush=True)
+                print(self.history, flush=True)
                 return jsonify(json_return)
             else:
                 if len(stories) > 1:
@@ -117,7 +119,9 @@ class GPT3Agent:
                 )
 
                 response = response["choices"][0]["text"][1:]
-
+                self.history.append("\nAI: " + response)
+                print("HISTORY", flush=True)
+                print(self.history, flush=True)
                 json_return = dict()
 
                 if (user_language != "en"):
@@ -146,9 +150,10 @@ class GPT3Agent:
             )
 
             response = response["choices"][0]["text"][1:]
-
+            self.history.append("\nAI: " + response)
             json_return = dict()
-
+            print("HISTORY", flush=True)
+            print(self.history, flush=True)
             if (user_language != "en"):
                 json_return['text'] = process_output_chatbot(response)
                 json_return['text'] = translate_base(json_return['text'], dest=user_language)
