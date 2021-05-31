@@ -182,8 +182,8 @@ class SemKG:
             #self.hdbscan_model.fit(data)
             labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
             df2['clusterid'] = labels
-            df2['keywordsId'] = [keywordsId[i].split('|') for l in range(len(df2))]
-            df2['keywordsCond'] = [keywordsCond[i].split('|') for l in range(len(df2))]
+            df2['keywordsId'] = [keywordsId[i].split('|') for l in range(len(df2))] if len(keywordsId[i].split('|')) > 0 else []
+            df2['keywordsCond'] = [keywordsCond[i].split('|') for l in range(len(df2))] if len(keywordsCond[i].split('|')) > 0 else []
             df2['answer'] = [answers[i] for l in range(len(df2))]
             print(df2.head(), flush=True)
             print(df2.columns, flush=True)
@@ -214,8 +214,8 @@ class SemKG:
                 labels, _ = hdbscan.approximate_predict(self.hdbscan_model, data)
                 dfVector['word'] = entities_word
                 dfVector['clusterid'] = labels
-                dfVector['keywordsId'] = [list() for i in range(len(entities_word))]
-                dfVector['keywordsCond'] = [list() for i in range(len(entities_word))]
+                dfVector['keywordsId'] = [[] for i in range(len(entities_word))]
+                dfVector['keywordsCond'] = [[] for i in range(len(entities_word))]
                 dfVector['answer'] = ['' for i in range(len(entities_word))]
                 result = pd.DataFrame()
                 for index, row in dfVector.iterrows():
@@ -228,8 +228,11 @@ class SemKG:
                     df2['distance'] = similarities_score
                     result = pd.concat([result, df2]).reset_index(drop=True).sort_values(by=['distance'], inplace=False, ascending=False)
                     result.drop_duplicates(subset="sentence", keep='first', inplace=True)
+                    print("KEEP CALCULCATION", flush=True)
                     result['keep'] = [True if all(item in keywordsUnlocked for item in elemB) or elemA == '' else False for elemB, elemA in
                      zip(list(result['keywordsCond'].values), list(result['answer'].values))]
+                    print("CALCULATION OK", flush=True)
+                    print(result, flush=True)
             return result[result['keep'] == True].drop(['keep'], axis=1).reset_index(drop=True)
         else:
             return pd.DataFrame()
