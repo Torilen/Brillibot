@@ -69,7 +69,7 @@ class CreateAgent(Resource):
     @api.expect(confCreateAgent)
     def post(self):
         personaData = json.loads(request.form['data'])
-        model = request.form['data']
+        model = request.form['model']
         print(personaData)
         persona = list()
         keywordsId = list()
@@ -92,13 +92,22 @@ class CreateAgent(Resource):
         if (request.remote_addr not in list(shared_temp.keys())):
             res = dict()
             res['creation'] = 1
+            res['debug'] = "Model : {}\n" \
+                           "IP : {}\n" \
+                           "It's a new agent.".format(model, request.remote_addr)
             return jsonify(res)
         else:
             res = dict()
             res['creation'] = 2
+            res['debug'] = "Model : {}\n" \
+                           "IP : {}\n" \
+                           "You already created an agent. It was erased.".format(model, request.remote_addr)
             return jsonify(res)
         res = dict()
         res['creation'] = 0
+        res['debug'] = "Model : {}\n" \
+                       "IP : {}\n" \
+                       "Error, your agent wasn't created.".format(model, request.remote_addr)
         return jsonify(res)
 
 @api.route('/reset', endpoint='reset', doc={"description": r"""@returns : {reset: int}
