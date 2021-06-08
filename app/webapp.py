@@ -31,6 +31,7 @@ confInteract = api.model('interact', {
 })
 confCreateAgent = api.model('createAgent', {
     'data': fields.List(fields.String, description="Données de chargement d'un agent donné au format suivant : ligne de personnalité;ids de mots-clés débloqués avec cette query séparés par des |; réponse scriptée à retourner si les mots-clés sont détectés; ids de mots-clés conditionnant la détection d'autres mots-clés séparés par des |\\n etc", required=True, example=["My name is Aniss;;;","I have 23 years old;;;","My job is Data Scientist;;;","My cay has already eaten a dog;0|1|5;Réponse associée à my cat has already eaten a dog;2|3","Souvenir 2;;;"])
+    'model': fields.String(description="Choix du modèle génératif à utiliser (grafbot/gpt3)", required=True, example='grafbot')
 })
 
 
@@ -68,6 +69,7 @@ class CreateAgent(Resource):
     @api.expect(confCreateAgent)
     def post(self):
         personaData = json.loads(request.form['data'])
+        model = request.form['data']
         print(personaData)
         persona = list()
         keywordsId = list()
@@ -81,9 +83,9 @@ class CreateAgent(Resource):
             keywordsCond.append(eSplit[3])
         print(persona, keywordsId, answers)
         shared_temp = SHARED.copy()
-        if os.getenv("model_to_use") == 'grafbot':
+        if model == 'grafbot':
             SHARED[request.remote_addr] = GrafbotAgent(personality=persona, ip=request.remote_addr, keywordsId=keywordsId, answers=answers, keywordsCond=keywordsCond)
-        elif os.getenv("model_to_use") == 'gpt3':
+        elif model == 'gpt3':
             SHARED[request.remote_addr] = GPT3Agent(personality=persona, ip=request.remote_addr,
                                                        keywordsId=keywordsId, answers=answers,
                                                        keywordsCond=keywordsCond, api_key=os.getenv("openai_api_key"))
