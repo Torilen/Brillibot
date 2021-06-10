@@ -11,6 +11,7 @@ import sys
 from tools.Utils import process_output_chatbot
 from structure.GrafbotAgent import GrafbotAgent
 from structure.GPT3Agent import GPT3Agent
+from structure.BlenderBaseAgent import BlenderBaseAgent
 import json
 
 context = SSL.Context(SSL.SSLv23_METHOD)
@@ -89,6 +90,10 @@ class CreateAgent(Resource):
             SHARED[request.remote_addr] = GPT3Agent(personality=persona, ip=request.remote_addr,
                                                        keywordsId=keywordsId, answers=answers,
                                                        keywordsCond=keywordsCond, api_key=os.getenv("openai_api_key"))
+        elif model == 'base':
+            SHARED[request.remote_addr] = BlenderBaseAgent(personality=persona, ip=request.remote_addr,
+                                                    keywordsId=keywordsId, answers=answers,
+                                                    keywordsCond=keywordsCond, api_key=os.getenv("openai_api_key"))
         if (request.remote_addr not in list(shared_temp.keys())):
             res = dict()
             res['creation'] = 1
