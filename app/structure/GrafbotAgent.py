@@ -16,7 +16,8 @@ class GrafbotAgent:
     opt = None
     agent = None
     world = None
-
+    history = []
+    persona_history = []
 
     def __init__(self, personality, keywordsId, answers, ip, keywordsCond):
         self.opt = self.parser.parse_args(print_args=False)
