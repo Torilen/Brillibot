@@ -19,6 +19,9 @@ class GrafbotAgent:
     history = []
     persona_history = []
     ip = ""
+    semkg = SemKG()
+    epikg = EpiKG()
+    polyencoder = None
 
     def __init__(self, personality, keywordsId, answers, ip, keywordsCond):
         self.opt = self.parser.parse_args(print_args=False)

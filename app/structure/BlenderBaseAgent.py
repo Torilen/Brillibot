@@ -15,6 +15,7 @@ class BlenderBaseAgent:
     api_key = ''
     ip = ""
     history = []
+    agent = None
     persona_history = []
 
     def __init__(self, personality, ip):
